@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Properties - PropertyHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="buy.css">
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="header-top">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                PropertyHub
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="buy.html" class="active">Buy</a></li>
+                <li><a href="rent.html">Rent</a></li>
+                <li><a href="apartment.html">Sell</a></li>
+                <li><a href="#">Pre-approval</a></li>
+                <li><a href="#">Home Value</a></li>
+                <li><a href="adindex.html">Admin Login</a></li>
+            </ul>
+
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="location.href='index.html#auth-page'">Login</button>
+                <button class="btn btn-signup" onclick="location.href='index.html#auth-page'">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Find Your Dream Home</h1>
+        <p>Discover apartments and homes available for purchase. Filter by location, price, and amenities to find your ideal property.</p>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="container">
+    <div class="filters">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" placeholder="City, State, or Zip">
+            </div>
+            <div class="filter-group">
+                <label for="price-range">Price Range</label>
+                <select id="price-range">
+                    <option value="">Any Price</option>
+                    <option value="0-200000">Under $200,000</option>
+                    <option value="200000-300000">$200,000 - $300,000</option>
+                    <option value="300000-400000">$300,000 - $400,000</option>
+                    <option value="400000-500000">$400,000 - $500,000</option>
+                    <option value="500000-600000">$500,000 - $600,000</option>
+                    <option value="600000+">Over $600,000</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="bedrooms">Bedrooms</label>
+                <select id="bedrooms">
+                    <option value="">Any</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5+</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button class="btn-primary" onclick="applyFilters()">Search</button>
+                <button class="btn-secondary" onclick="resetFilters()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Properties Grid -->
+    <div class="properties-grid" id="properties-container">
+        <!-- Properties will be loaded here by JavaScript -->
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>PropertyHub</h3>
+                <p>Your gateway to premium apartment living. Discover, reserve, and purchase your dream home with our comprehensive property management system.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="buy.html">Buy</a></li>
+                    <li><a href="rent.html">Rent</a></li>
+                    <li><a href="apartment.html">Sell</a></li>
+                    <li><a href="#">Pre-approval</a></li>
+                    <li><a href="#">Home Value</a></li>
+                    <li><a href="adindex.html">Admin Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Real Estate Ave, Tampa, FL</li>
+                    <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                    <li><i class="fas fa-envelope"></i> info@propertyhub.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 PropertyHub. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Purchase Modal -->
+<div id="purchase-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('purchase-modal')">&times;</span>
+        <h2>Purchase This Property</h2>
+        <form id="purchase-form">
+            <div class="form-group">
+                <label for="purchase-name">Full Name</label>
+                <input type="text" id="purchase-name" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-email">Email</label>
+                <input type="email" id="purchase-email" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-phone">Phone</label>
+                <input type="tel" id="purchase-phone" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-offer">Offer Price ($)</label>
+                <input type="number" id="purchase-offer" required placeholder="Enter your offer">
+            </div>
+            <div class="form-group">
+                <label for="purchase-type">Payment Type</label>
+                <select id="purchase-type" required>
+                    <option value="">Select Payment Type</option>
+                    <option value="Mortgage">Mortgage</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Installment">Installment Plan</option>
+                </select>
+            </div>
+            <div class="payment-fields-group">
+                <div class="form-group payment-field">
+                    <label for="card-number">Card Number (if applicable)</label>
+                    <input type="text" id="card-number" maxlength="19" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-group payment-field">
+                    <label for="name-on-card">Name on Card</label>
+                    <input type="text" id="name-on-card">
+                </div>
+            </div>
+            <div id="price-calculation" class="price-calculation">
+                <div class="price-row"><span>Property Price:</span><span id="property-price">$0</span></div>
+                <div class="price-row"><span>Your Offer:</span><span id="offer-price">$0</span></div>
+                <div class="price-row price-total"><span>Difference:</span><span id="price-difference">$0</span></div>
+            </div>
+            <button type="submit" class="btn-primary">Submit Purchase Offer</button>
+            <button type="button" id="download-pdf" class="btn-secondary" style="display: none;">Download Offer PDF</button>
+        </form>
+    </div>
+</div>
+
+<script src="buy.js"></script>
+
+</body>
+</html>
