@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +6,23 @@
     <title>PROPERTYHUB</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="adstyles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+4J8dO1JIHf664tT0tPC1JQYwbv6bEhlfW2Z8M2yk=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" integrity="sha256-w8dQ0vV4H14R/2uOeGZ5ER5YjZL+QkNo4fU6Y4X3BC0=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+    <style>
+        /* Ensure Leaflet map fills container */
+        #map-container .leaflet-container{height:100%;width:100%;}
+        #map-container{position:relative;}
+        .map-tool-btn{background:#fff;border:1px solid #d1d5db;padding:6px 10px;font-size:12px;border-radius:6px;display:flex;align-items:center;gap:4px;box-shadow:0 1px 2px rgba(0,0,0,.1);cursor:pointer;font-weight:500;}
+        .map-tool-btn.active{background:#2563eb;color:#fff;border-color:#1d4ed8;}
+        #map-options-panel{position:absolute;top:3px;left:110px;z-index:60;background:#fff;border:1px solid #d1d5db;border-radius:8px;padding:10px 14px;box-shadow:0 4px 14px -2px rgba(0,0,0,.15);width:240px;}
+        #map-options-panel h4{font-size:13px;font-weight:600;margin:0 0 6px;color:#111827;}
+        #map-options-panel label{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:6px;cursor:pointer;}
+        .marker-status-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+        .legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.2);}
+        .hidden{display:none;}
+    </style>
     <div class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">PROPERTYHUB</a></div>
 </head>
 <body>
@@ -23,6 +38,7 @@
             <ul class="space-y-2">
                 <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('dashboard')"><span class="mr-2">📊</span> Dashboard</a></li>
                 <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('apartmentListings')"><span class="mr-2">🏢</span> Apartment Listings</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('savedItems')"><span class="mr-2">❤️</span> Saved Items</a></li>
                 <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('userManagement')"><span class="mr-2">👥</span> User Management</a></li>
                 <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('bookingManagement')"><span class="mr-2">📋</span> Booking Management</a></li>
                 <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('listingApprovals')"><span class="mr-2">✅</span> Listing Approvals</a></li>
@@ -237,6 +253,65 @@
             <!-- Listing Approvals content -->
         </section>
 
+        <!-- Saved Items Section -->
+        <section id="savedItems" class="section hidden">
+            <h2 class="text-xl font-bold mb-4">Saved Properties</h2>
+            <div class="user-stats-grid grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold" id="totalSavedItems">0</div>
+                    <div class="text-sm text-gray-500">Total Saved Items</div>
+                    <div class="text-xs text-gray-500">User favorites</div>
+                    <div class="text-3xl mt-2">❤️</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold" id="savedAvailableItems">0</div>
+                    <div class="text-sm text-gray-500">Available</div>
+                    <div class="text-xs text-gray-500">Ready to purchase</div>
+                    <div class="text-3xl mt-2">✅</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold" id="savedPendingItems">0</div>
+                    <div class="text-sm text-gray-500">Under Review</div>
+                    <div class="text-xs text-gray-500">Pending approval</div>
+                    <div class="text-3xl mt-2">⏳</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold" id="savedSoldItems">0</div>
+                    <div class="text-sm text-gray-500">Sold Out</div>
+                    <div class="text-xs text-gray-500">No longer available</div>
+                    <div class="text-3xl mt-2">🚫</div>
+                </div>
+            </div>
+
+            <div class="table-filters flex gap-4 mb-4">
+                <select id="savedItemFilter" class="p-2 rounded-lg border" onchange="filterSavedItems()">
+                    <option value="all">All Saved Items</option>
+                    <option value="available">Available</option>
+                    <option value="pending">Under Review</option>
+                    <option value="sold">Sold Out</option>
+                </select>
+                <input type="text" id="savedItemSearch" class="p-2 rounded-lg border" placeholder="Search..." onkeyup="searchSavedItems()">
+            </div>
+
+            <table class="data-table w-full bg-white rounded-lg shadow">
+                <thead>
+                <tr class="bg-gray-200">
+                    <th>Property</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Bedrooms</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Saved Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="savedItemsTableBody">
+                <!-- Saved properties will be populated here -->
+                </tbody>
+            </table>
+        </section>
+
         <!-- Customer Modals -->
         <div id="viewModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div class="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -440,8 +515,77 @@
             </div>
         </div>
 
+        <!-- Adding Location Maps Section -->
+        <section id="locationMaps" class="section hidden">
+            <h2 class="text-2xl font-bold mb-4">Property Locations</h2>
+            <div class="flex mb-4 justify-between">
+                <div class="flex-1">
+                    <p class="mb-2">View all property locations across the United States. Click on markers to see property details.</p>
+                </div>
+                <div>
+                    <button class="create-btn" onclick="refreshLocationMap()">🔄 Refresh Map</button>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                <div class="relative" style="height:500px;width:100%;border-radius:8px;">
+                    <div id="map-container" style="height:100%;width:100%;border-radius:8px;"></div>
+                    <div id="map-tools" class="absolute top-3 left-3 z-50 flex flex-col gap-2">
+                        <button id="optionsToggleBtn" class="map-tool-btn" onclick="toggleMapOptions()">🛠️ Options</button>
+                        <button id="drawBoundaryBtn" class="map-tool-btn" onclick="beginBoundaryDraw()">✏️ Draw Boundary</button>
+                        <button id="removeBoundaryBtn" class="map-tool-btn" onclick="clearBoundary()">❌ Remove Boundary</button>
+                        <button id="resetViewBtn" class="map-tool-btn" onclick="resetMapView()">🧭 Reset View</button>
+                    </div>
+                    <div id="map-options-panel" class="hidden">
+                        <h4>Map Options</h4>
+                        <label><input type="checkbox" id="clusterToggle" onchange="toggleClustering(this.checked)"> Enable Clustering</label>
+                        <label><input type="checkbox" id="autoFitToggle" checked onchange="setAutoFit(this.checked)"> Auto-fit on Filter</label>
+                        <div class="mt-2 border-t pt-2">
+                            <h4>Legend</h4>
+                            <div class="marker-status-legend text-[11px]">
+                                <div><span class="legend-dot" style="background:#16a34a"></span> Available</div>
+                                <div><span class="legend-dot" style="background:#d97706"></span> Pending</div>
+                                <div><span class="legend-dot" style="background:#dc2626"></span> Booked</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-right">
+                            <button class="map-tool-btn" style="font-weight:600;" onclick="toggleMapOptions(false)">Close</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-gray-500 flex justify-between">
+                    <p>Total properties shown: <span id="property-count">Loading...</span></p>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-500 rounded-full mr-1"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-yellow-500 rounded-full mr-1"></div>
+                            <span>Pending</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-red-500 rounded-full mr-1"></div>
+                            <span>Booked</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h3 class="text-xl font-bold mb-2">Featured Locations</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="featured-locations">
+                    <!-- Featured locations will be populated here -->
+                </div>
+            </div>
+        </section>
+
     </main>
 </div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j7kGStb6Js0Jf2bbr13tC4J1YxhlHfCJo/dhp54=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js" integrity="sha256-eE3ShgBroz7g0a0zYwoMvVJE9idh+NangNh4tW7x1rs=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
 <script src="adscript.js"></script>
 </body>
 </html>

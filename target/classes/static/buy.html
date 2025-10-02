@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Properties - PropertyHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="buy.css">
+</head>
+<body>
+<!-- Header -->
+<header class="main-header">
+    <div class="container">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                PropertyHub
+            </a>
+
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="buy.html" class="active">Buy</a></li>
+                    <li><a href="rent.html">Rent</a></li>
+                    <li><a href="apartment.html">Sell</a></li>
+                    <li><a href="#">Pre-approval</a></li>
+                    <li><a href="#">Home Value</a></li>
+                </ul>
+            </nav>
+
+            <div class="auth-buttons">
+                <a href="index.html#auth-page" class="btn login-btn">Login</a>
+                <a href="index.html#auth-page" class="btn signup-btn">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Search Filters -->
+<section class="search-container">
+    <div class="container">
+        <div class="search-panel">
+            <div class="search-row">
+                <div class="search-group">
+                    <label>Location</label>
+                    <div class="search-input">
+                        <input type="text" id="location" placeholder="Enter city, neighborhood, or address">
+                        <i class="fas fa-search search-icon" onclick="applyFilters({searchIconClicked: true})"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-row">
+                <div class="search-group half">
+                    <label>Category</label>
+                    <div class="select-wrapper">
+                        <select id="category">
+                            <option value="">All Categories</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Condo">Condo</option>
+                            <option value="House">House</option>
+                            <option value="Townhouse">Townhouse</option>
+                            <option value="Villa">Villa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="search-group half">
+                    <label>Price Range</label>
+                    <div class="price-range-container">
+                        <div class="slider-track"></div>
+                        <input type="range" min="50000" max="3000000" value="50000" step="25000" class="slider" id="price-min">
+                        <input type="range" min="50000" max="3000000" value="3000000" step="25000" class="slider" id="price-max">
+                        <div class="price-values">
+                            <span id="price-min-value">$50K</span>
+                            <span class="price-separator">-</span>
+                            <span id="price-max-value">$3000K+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-row">
+                <div class="search-group third">
+                    <label>Bedrooms</label>
+                    <div class="select-wrapper">
+                        <select id="bedrooms">
+                            <option value="">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="search-group third">
+                    <label>Bathrooms</label>
+                    <div class="select-wrapper">
+                        <select id="bathrooms">
+                            <option value="">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="search-group third">
+                    <label>Move-in Date</label>
+                    <input type="date" id="move-in-date" placeholder="yyyy-mm-dd">
+                </div>
+            </div>
+
+            <div class="search-row">
+                <div class="amenities-group">
+                    <label>Amenities</label>
+                    <div class="amenities-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="pool">
+                            <span class="checkmark"></span>
+                            Pool
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="gym">
+                            <span class="checkmark"></span>
+                            Gym
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="parking">
+                            <span class="checkmark"></span>
+                            Parking
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="pets-allowed">
+                            <span class="checkmark"></span>
+                            Pets Allowed
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="furnished">
+                            <span class="checkmark"></span>
+                            Furnished
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-row sort-and-actions">
+                <div class="sort-group">
+                    <label>Sort By</label>
+                    <div class="select-wrapper">
+                        <select id="sort-by">
+                            <option value="price-low">Price (Low to High)</option>
+                            <option value="price-high">Price (High to Low)</option>
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="reset-btn" class="btn reset-btn" onclick="resetFilters()">Reset</button>
+                    <button id="search-btn" class="btn search-btn" onclick="applyFilters()">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Properties Section -->
+<section class="properties-section">
+    <div class="container">
+        <h2 class="section-title">Available Properties for Sale</h2>
+        <div id="properties-container" class="properties-grid">
+            <!-- Properties will be dynamically loaded here -->
+        </div>
+    </div>
+</section>
+
+<!-- Purchase Modal -->
+<div id="purchase-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('purchase-modal')">&times;</span>
+        <h2>Make an Offer</h2>
+        <form id="purchase-form">
+            <div class="form-group">
+                <label for="purchase-name">Full Name</label>
+                <input type="text" id="purchase-name" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-email">Email</label>
+                <input type="email" id="purchase-email" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-phone">Phone</label>
+                <input type="tel" id="purchase-phone" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-offer">Offer Amount ($)</label>
+                <input type="number" id="purchase-offer" required min="1000">
+            </div>
+            <div class="form-group">
+                <label for="move-in-date">Desired Closing Date</label>
+                <input type="date" id="move-in-date" required>
+            </div>
+            <div class="form-group">
+                <label for="financing-type">Financing Type</label>
+                <select id="financing-type" required>
+                    <option value="">Select Financing</option>
+                    <option value="cash">Cash</option>
+                    <option value="conventional">Conventional Loan</option>
+                    <option value="fha">FHA Loan</option>
+                    <option value="va">VA Loan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="purchase-comments">Additional Comments</label>
+                <textarea id="purchase-comments" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn submit-btn">Submit Offer</button>
+        </form>
+    </div>
+</div>
+
+<!-- Notification Toast -->
+<div id="notification-toast" class="toast">
+    <div class="toast-content">
+        <i class="fas fa-check-circle toast-icon"></i>
+        <div class="toast-message">Notification message</div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>PropertyHub</h3>
+                <p>Your gateway to premium property ownership. Find your dream home today!</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="buy.html">Buy</a></li>
+                    <li><a href="rent.html">Rent</a></li>
+                    <li><a href="apartment.html">Sell</a></li>
+                    <li><a href="#">Pre-approval</a></li>
+                    <li><a href="#">Home Value</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Real Estate Ave, Tampa, FL</li>
+                    <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                    <li><i class="fas fa-envelope"></i> info@propertyhub.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 PropertyHub. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="buy.js"></script>
+
+</body>
+</html>

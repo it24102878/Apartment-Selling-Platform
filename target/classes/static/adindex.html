@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROPERTYHUB</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="adstyles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+4J8dO1JIHf664tT0tPC1JQYwbv6bEhlfW2Z8M2yk=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" integrity="sha256-w8dQ0vV4H14R/2uOeGZ5ER5YjZL+QkNo4fU6Y4X3BC0=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+    <style>
+        /* Ensure Leaflet map fills container */
+        #map-container .leaflet-container{height:100%;width:100%;}
+        #map-container{position:relative;}
+        .map-tool-btn{background:#fff;border:1px solid #d1d5db;padding:6px 10px;font-size:12px;border-radius:6px;display:flex;align-items:center;gap:4px;box-shadow:0 1px 2px rgba(0,0,0,.1);cursor:pointer;font-weight:500;}
+        .map-tool-btn.active{background:#2563eb;color:#fff;border-color:#1d4ed8;}
+        #map-options-panel{position:absolute;top:3px;left:110px;z-index:60;background:#fff;border:1px solid #d1d5db;border-radius:8px;padding:10px 14px;box-shadow:0 4px 14px -2px rgba(0,0,0,.15);width:240px;}
+        #map-options-panel h4{font-size:13px;font-weight:600;margin:0 0 6px;color:#111827;}
+        #map-options-panel label{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:6px;cursor:pointer;}
+        .marker-status-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+        .legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.2);}
+        .hidden{display:none;}
+    </style>
+    <div class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">PROPERTYHUB</a></div>
+</head>
+<body>
+<div class="flex h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md">
+        <div class="p-4 text-center">
+            <div class="avatar-placeholder text-2xl font-bold">AK</div>
+            <div class="mt-2 text-sm">Admin Klein</div>
+            <div class="text-xs text-gray-500">Super Admin</div>
+        </div>
+        <nav class="mt-6">
+            <ul class="space-y-2">
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('dashboard')"><span class="mr-2">📊</span> Dashboard</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('apartmentListings')"><span class="mr-2">🏢</span> Apartment Listings</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('savedItems')"><span class="mr-2">❤️</span> Saved Items</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('userManagement')"><span class="mr-2">👥</span> User Management</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('bookingManagement')"><span class="mr-2">📋</span> Booking Management</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('listingApprovals')"><span class="mr-2">✅</span> Listing Approvals</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('analytics')"><span class="mr-2">📈</span> Analytics</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('revenueReports')"><span class="mr-2">📊</span> Revenue Reports</a></li>
+                <li><a href="#" class="nav-item flex items-center p-4 text-gray-600 hover:bg-gray-200" onclick="loadSection('locationMaps')"><span class="mr-2">🗺️</span> Location Maps</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 overflow-y-auto">
+        <header class="header">
+            <div class="logo">PROPERTYHUB</div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search..." class="search-input" onkeyup="searchTable(this.value, currentSection)">
+            </div>
+            <div class="header-actions">
+                <button class="create-btn" onclick="addNewApartment()">+ Create New Listing</button>
+                <div class="header-icon">📊</div>
+                <div class="header-icon">✉️</div>
+                <div class="header-icon relative">
+                    <span class="notification-badge">7</span>
+                    🔔
+                </div>
+                <div class="user-profile">
+                    <div class="avatar-placeholder">AK</div>
+                    <div>
+                        <div class="user-name">Admin Klein</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sections -->
+        <section id="dashboard" class="section hidden">
+            <!-- Dashboard content -->
+        </section>
+
+        <section id="userManagement" class="section hidden">
+            <div class="section-actions">
+                <button class="create-btn" onclick="addNewUser()">+ Add New User</button>
+                <button class="create-btn" onclick="exportUsers()">📊 Export Data</button>
+            </div>
+            <div class="user-stats-grid grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">1,847</div>
+                    <div class="text-sm text-gray-500">Total Users</div>
+                    <div class="text-xs text-green-500">+5.2% this month</div>
+                    <div class="text-3xl mt-2">👤</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">1,623</div>
+                    <div class="text-sm text-gray-500">Active Users</div>
+                    <div class="text-xs text-green-500">+3.1% this week</div>
+                    <div class="text-3xl mt-2">✅</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">456</div>
+                    <div class="text-sm text-gray-500">Premium Users</div>
+                    <div class="text-xs text-green-500">+12.5% this month</div>
+                    <div class="text-3xl mt-2">👑</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">23</div>
+                    <div class="text-sm text-gray-500">Suspended Users</div>
+                    <div class="text-xs text-red-500">-2 this week</div>
+                    <div class="text-3xl mt-2">🚫</div>
+                </div>
+            </div>
+            <div class="table-filters flex gap-4 mb-4">
+                <select id="userFilter" class="p-2 rounded-lg border" onchange="filterTable('userManagement', this.value)">
+                    <option value="all">All Users</option>
+                    <option value="recent">Recently Registered</option>
+                    <option value="oldest">Oldest Users</option>
+                </select>
+            </div>
+            <table class="data-table w-full bg-white rounded-lg shadow">
+                <thead>
+                <tr class="bg-gray-200">
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Registration Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="userTableBody">
+                <!-- User data will be populated here -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="apartmentListings" class="section hidden">
+            <div class="section-actions">
+                <button class="create-btn" onclick="addNewApartment()">+ Add New Apartment</button>
+                <button class="create-btn" onclick="exportApartments()">📊 Export Data</button>
+            </div>
+            <div class="user-stats-grid grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-gray-500">Total Listings</div>
+                    <div class="text-xs text-green-500">+2 this week</div>
+                    <div class="text-3xl mt-2">🏢</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-gray-500">Available</div>
+                    <div class="text-xs text-gray-500">Ready to book</div>
+                    <div class="text-3xl mt-2">✅</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-gray-500">Booked</div>
+                    <div class="text-xs text-gray-500">Currently occupied</div>
+                    <div class="text-3xl mt-2">🛏️</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-gray-500">Pending Approval</div>
+                    <div class="text-xs text-gray-500">Needs review</div>
+                    <div class="text-3xl mt-2">⏳</div>
+                </div>
+            </div>
+            <div class="table-filters flex gap-4 mb-4">
+                <select id="apartmentFilter" class="p-2 rounded-lg border" onchange="filterApartments()">
+                    <option value="all">All Apartments</option>
+                    <option value="available">Available</option>
+                    <option value="booked">Booked</option>
+                    <option value="pending">Pending Approval</option>
+                </select>
+                <input type="text" id="apartmentSearch" class="p-2 rounded-lg border" placeholder="Search..." onkeyup="searchApartments()">
+            </div>
+            <table class="data-table w-full bg-white rounded-lg shadow">
+                <thead>
+                <tr class="bg-gray-200">
+                    <th>Apartment</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Bedrooms</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="apartmentTableBody">
+                <!-- Apartment data will be populated here -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="bookingManagement" class="section hidden">
+            <div class="section-actions">
+                <button class="create-btn" onclick="exportBookings()">📊 Export Data</button>
+            </div>
+            <div class="user-stats-grid grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-gray-500">Total Bookings</div>
+                    <div class="text-xs text-green-500">+5 this week</div>
+                    <div class="text-3xl mt-2">📋</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-gray-500">Active</div>
+                    <div class="text-xs text-gray-500">Currently active</div>
+                    <div class="text-3xl mt-2">✅</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-gray-500">Completed</div>
+                    <div class="text-xs text-gray-500">Past bookings</div>
+                    <div class="text-3xl mt-2">📅</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-gray-500">Cancelled</div>
+                    <div class="text-xs text-gray-500">Cancelled bookings</div>
+                    <div class="text-3xl mt-2">❌</div>
+                </div>
+            </div>
+            <div class="table-filters flex gap-4 mb-4">
+                <select id="bookingFilter" class="p-2 rounded-lg border" onchange="filterBookings()">
+                    <option value="all">All Bookings</option>
+                    <option value="active">Active</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <input type="text" id="bookingSearch" class="p-2 rounded-lg border" placeholder="Search..." onkeyup="searchBookings()">
+            </div>
+            <table class="data-table w-full bg-white rounded-lg shadow">
+                <thead>
+                <tr class="bg-gray-200">
+                    <th>Booking ID</th>
+                    <th>User</th>
+                    <th>Apartment</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="bookingTableBody">
+                <!-- Booking data will be populated here -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="listingApprovals" class="section hidden">
+            <!-- Listing Approvals content -->
+        </section>
+
+        <!-- Saved Items Section -->
+        <section id="savedItems" class="section hidden">
+            <h2 class="text-xl font-bold mb-4">Saved Properties</h2>
+            <div class="user-stats-grid grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold" id="totalSavedItems">0</div>
+                    <div class="text-sm text-gray-500">Total Saved Items</div>
+                    <div class="text-xs text-gray-500">User favorites</div>
+                    <div class="text-3xl mt-2">❤️</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold" id="savedAvailableItems">0</div>
+                    <div class="text-sm text-gray-500">Available</div>
+                    <div class="text-xs text-gray-500">Ready to purchase</div>
+                    <div class="text-3xl mt-2">✅</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold" id="savedPendingItems">0</div>
+                    <div class="text-sm text-gray-500">Under Review</div>
+                    <div class="text-xs text-gray-500">Pending approval</div>
+                    <div class="text-3xl mt-2">⏳</div>
+                </div>
+                <div class="stat-card bg-white p-4 rounded-lg shadow">
+                    <div class="text-2xl font-bold" id="savedSoldItems">0</div>
+                    <div class="text-sm text-gray-500">Sold Out</div>
+                    <div class="text-xs text-gray-500">No longer available</div>
+                    <div class="text-3xl mt-2">🚫</div>
+                </div>
+            </div>
+
+            <div class="table-filters flex gap-4 mb-4">
+                <select id="savedItemFilter" class="p-2 rounded-lg border" onchange="filterSavedItems()">
+                    <option value="all">All Saved Items</option>
+                    <option value="available">Available</option>
+                    <option value="pending">Under Review</option>
+                    <option value="sold">Sold Out</option>
+                </select>
+                <input type="text" id="savedItemSearch" class="p-2 rounded-lg border" placeholder="Search..." onkeyup="searchSavedItems()">
+            </div>
+
+            <table class="data-table w-full bg-white rounded-lg shadow">
+                <thead>
+                <tr class="bg-gray-200">
+                    <th>Property</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Bedrooms</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Saved Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="savedItemsTableBody">
+                <!-- Saved properties will be populated here -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Customer Modals -->
+        <div id="viewModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">👁️ Customer Details</h2>
+                    <button class="text-2xl" onclick="closeModal('viewModal')">✕</button>
+                </div>
+                <div class="space-y-4">
+                    <div><strong>Full Name:</strong> <span id="viewFullName"></span></div>
+                    <div><strong>Email:</strong> <span id="viewEmail"></span></div>
+                    <div><strong>Phone:</strong> <span id="viewPhone"></span></div>
+                    <div><strong>Booking ID:</strong> <span id="viewBookingId"></span></div>
+                    <div><strong>Membership:</strong> <span id="viewMembership"></span></div>
+                    <div><strong>Account Status:</strong> <span id="viewAccountStatus">Active</span></div>
+                    <div><strong>Registration Date:</strong> <span id="viewRegDate">Jan 15, 2024</span></div>
+                    <div><strong>Total Bookings:</strong> <span id="viewTotalBookings">3 bookings</span></div>
+                    <div><strong>Total Spent:</strong> <span id="viewTotalSpent">$12,450</span></div>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button class="create-btn mr-2" onclick="editCustomerFromView()">✏️ Edit Customer</button>
+                    <button class="create-btn" onclick="closeModal('viewModal')">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="editModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">✏️ Edit Customer</h2>
+                    <button class="text-2xl" onclick="closeModal('editModal')">✕</button>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="avatar-placeholder" id="editAvatar"></div>
+                        <div>
+                            <input type="text" id="editFirstName" class="p-2 border rounded" placeholder="First Name">
+                            <input type="text" id="editLastName" class="p-2 border rounded" placeholder="Last Name">
+                        </div>
+                    </div>
+                    <input type="email" id="editEmail" class="w-full p-2 border rounded" placeholder="Email Address">
+                    <input type="text" id="editPhone" class="w-full p-2 border rounded" placeholder="Phone Number">
+                    <select id="editMembership" class="w-full p-2 border rounded">
+                        <option>Basic Member</option>
+                        <option>Standard Member</option>
+                        <option>Premium Member</option>
+                        <option>VIP Member</option>
+                    </select>
+                    <select id="editStatus" class="w-full p-2 border rounded">
+                        <option>Approved</option>
+                        <option>Pending</option>
+                        <option>Rejected</option>
+                    </select>
+                    <select id="editAccountStatus" class="w-full p-2 border rounded">
+                        <option>Active</option>
+                        <option>Suspended</option>
+                        <option>Inactive</option>
+                    </select>
+                    <textarea id="editNotes" class="w-full p-2 border rounded" placeholder="Notes"></textarea>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button class="create-btn mr-2" onclick="saveCustomerChanges()">💾 Save Changes</button>
+                    <button class="create-btn" onclick="closeModal('editModal')">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="deleteModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">🗑️ Delete Customer</h2>
+                    <button class="text-2xl" onclick="closeModal('deleteModal')">✕</button>
+                </div>
+                <div class="space-y-4">
+                    <div class="text-red-500">⚠️ Warning: This action cannot be undone!</div>
+                    <div>You are about to permanently delete this customer and all associated data including:</div>
+                    <ul class="list-disc pl-5">
+                        <li>Customer profile and account information</li>
+                        <li>Booking history and payment records</li>
+                        <li>Communication logs and preferences</li>
+                        <li>Any pending transactions or reservations</li>
+                    </ul>
+                    <div><strong>Customer:</strong> <span id="deleteCustomerName"></span></div>
+                    <div><strong>Booking ID:</strong> <span id="deleteBookingId"></span></div>
+                    <div><strong>Account Status:</strong> <span id="deleteAccountStatus">Active</span></div>
+                    <div>Type "DELETE" to confirm: <input type="text" id="deleteConfirmation" class="p-2 border rounded" onkeyup="validateDelete()"></div>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button class="create-btn mr-2" id="confirmDeleteBtn" disabled onclick="confirmDelete()">🗑️ Delete Customer</button>
+                    <button class="create-btn" onclick="closeModal('deleteModal')">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apartment Modals -->
+        <!-- Add Apartment Modal -->
+        <div id="addApartmentModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">Add New Apartment</h2>
+                <form id="newApartmentForm">
+                    <input type="text" id="newApartmentType" placeholder="Type" class="w-full p-2 border rounded mb-2" required>
+                    <input type="number" id="newApartmentPrice" placeholder="Price" class="w-full p-2 border rounded mb-2" required>
+                    <input type="number" id="newApartmentBedrooms" placeholder="Bedrooms" class="w-full p-2 border rounded mb-2" required>
+                    <input type="text" id="newApartmentLocation" placeholder="Location" class="w-full p-2 border rounded mb-2" required>
+                    <select id="newApartmentStatus" class="w-full p-2 border rounded mb-2">
+                        <option value="AVAILABLE">Available</option>
+                        <option value="BOOKED">Booked</option>
+                        <option value="PENDING">Pending</option>
+                    </select>
+                    <textarea id="newApartmentDescription" placeholder="Description" class="w-full p-2 border rounded mb-4"></textarea>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="closeModal('addApartmentModal')" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                        <button type="button" onclick="createApartment()" class="bg-blue-500 text-white px-4 py-2 rounded">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Apartment Modal -->
+        <div id="viewApartmentModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">Apartment Details</h2>
+                <div class="space-y-2">
+                    <p><strong>ID:</strong> <span id="viewApartmentId"></span></p>
+                    <p><strong>Type:</strong> <span id="viewApartmentType"></span></p>
+                    <p><strong>Price:</strong> <span id="viewApartmentPrice"></span></p>
+                    <p><strong>Bedrooms:</strong> <span id="viewApartmentBedrooms"></span></p>
+                    <p><strong>Location:</strong> <span id="viewApartmentLocation"></span></p>
+                    <p><strong>Status:</strong> <span id="viewApartmentStatus"></span></p>
+                    <p><strong>Description:</strong> <span id="viewApartmentDescription"></span></p>
+                </div>
+                <button onclick="closeModal('viewApartmentModal')" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded w-full">Close</button>
+            </div>
+        </div>
+
+        <!-- Edit Apartment Modal -->
+        <div id="editApartmentModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">Edit Apartment</h2>
+                <input type="hidden" id="editApartmentId">
+                <input type="text" id="editApartmentType" placeholder="Type" class="w-full p-2 border rounded mb-2">
+                <input type="number" id="editApartmentPrice" placeholder="Price" class="w-full p-2 border rounded mb-2">
+                <input type="number" id="editApartmentBedrooms" placeholder="Bedrooms" class="w-full p-2 border rounded mb-2">
+                <input type="text" id="editApartmentLocation" placeholder="Location" class="w-full p-2 border rounded mb-2">
+                <select id="editApartmentStatus" class="w-full p-2 border rounded mb-2">
+                    <option value="AVAILABLE">Available</option>
+                    <option value="BOOKED">Booked</option>
+                    <option value="PENDING">Pending</option>
+                </select>
+                <textarea id="editApartmentDescription" placeholder="Description" class="w-full p-2 border rounded mb-4"></textarea>
+                <div class="flex justify-end gap-2">
+                    <button onclick="closeModal('editApartmentModal')" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                    <button onclick="updateApartment()" class="bg-green-500 text-white px-4 py-2 rounded">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Modals -->
+        <!-- Add User Modal -->
+        <div id="addUserModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">Add New User</h2>
+                <form id="newUserForm">
+                    <input type="text" id="newUserName" placeholder="Full Name" class="w-full p-2 border rounded mb-2" required>
+                    <input type="email" id="newUserEmail" placeholder="Email" class="w-full p-2 border rounded mb-2" required>
+                    <input type="text" id="newUserPhone" placeholder="Phone" class="w-full p-2 border rounded mb-2">
+                    <input type="password" id="newUserPassword" placeholder="Password" class="w-full p-2 border rounded mb-4" required>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="closeModal('addUserModal')" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                        <button type="button" onclick="createUser()" class="bg-blue-500 text-white px-4 py-2 rounded">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- View User Modal -->
+        <div id="viewUserModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">User Details</h2>
+                <div class="space-y-2">
+                    <p><strong>Name:</strong> <span id="viewUserName"></span></p>
+                    <p><strong>Email:</strong> <span id="viewUserEmail"></span></p>
+                    <p><strong>Phone:</strong> <span id="viewUserPhone"></span></p>
+                    <p><strong>Registration Date:</strong> <span id="viewUserRegDate"></span></p>
+                </div>
+                <button onclick="closeModal('viewUserModal')" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded w-full">Close</button>
+            </div>
+        </div>
+
+        <!-- Edit User Modal -->
+        <div id="editUserModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 class="text-xl font-bold mb-4">Edit User</h2>
+                <input type="hidden" id="editUserId">
+                <input type="text" id="editUserName" placeholder="Full Name" class="w-full p-2 border rounded mb-2">
+                <input type="email" id="editUserEmail" placeholder="Email" class="w-full p-2 border rounded mb-2">
+                <input type="text" id="editUserPhone" placeholder="Phone" class="w-full p-2 border rounded mb-4">
+                <div class="flex justify-end gap-2">
+                    <button onclick="closeModal('editUserModal')" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                    <button onclick="updateUser()" class="bg-green-500 text-white px-4 py-2 rounded">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adding Location Maps Section -->
+        <section id="locationMaps" class="section hidden">
+            <h2 class="text-2xl font-bold mb-4">Property Locations</h2>
+            <div class="flex mb-4 justify-between">
+                <div class="flex-1">
+                    <p class="mb-2">View all property locations across the United States. Click on markers to see property details.</p>
+                </div>
+                <div>
+                    <button class="create-btn" onclick="refreshLocationMap()">🔄 Refresh Map</button>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                <div class="relative" style="height:500px;width:100%;border-radius:8px;">
+                    <div id="map-container" style="height:100%;width:100%;border-radius:8px;"></div>
+                    <div id="map-tools" class="absolute top-3 left-3 z-50 flex flex-col gap-2">
+                        <button id="optionsToggleBtn" class="map-tool-btn" onclick="toggleMapOptions()">🛠️ Options</button>
+                        <button id="drawBoundaryBtn" class="map-tool-btn" onclick="beginBoundaryDraw()">✏️ Draw Boundary</button>
+                        <button id="removeBoundaryBtn" class="map-tool-btn" onclick="clearBoundary()">❌ Remove Boundary</button>
+                        <button id="resetViewBtn" class="map-tool-btn" onclick="resetMapView()">🧭 Reset View</button>
+                    </div>
+                    <div id="map-options-panel" class="hidden">
+                        <h4>Map Options</h4>
+                        <label><input type="checkbox" id="clusterToggle" onchange="toggleClustering(this.checked)"> Enable Clustering</label>
+                        <label><input type="checkbox" id="autoFitToggle" checked onchange="setAutoFit(this.checked)"> Auto-fit on Filter</label>
+                        <div class="mt-2 border-t pt-2">
+                            <h4>Legend</h4>
+                            <div class="marker-status-legend text-[11px]">
+                                <div><span class="legend-dot" style="background:#16a34a"></span> Available</div>
+                                <div><span class="legend-dot" style="background:#d97706"></span> Pending</div>
+                                <div><span class="legend-dot" style="background:#dc2626"></span> Booked</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-right">
+                            <button class="map-tool-btn" style="font-weight:600;" onclick="toggleMapOptions(false)">Close</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-gray-500 flex justify-between">
+                    <p>Total properties shown: <span id="property-count">Loading...</span></p>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-500 rounded-full mr-1"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-yellow-500 rounded-full mr-1"></div>
+                            <span>Pending</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-red-500 rounded-full mr-1"></div>
+                            <span>Booked</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h3 class="text-xl font-bold mb-2">Featured Locations</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="featured-locations">
+                    <!-- Featured locations will be populated here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j7kGStb6Js0Jf2bbr13tC4J1YxhlHfCJo/dhp54=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js" integrity="sha256-eE3ShgBroz7g0a0zYwoMvVJE9idh+NangNh4tW7x1rs=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
+<script src="adscript.js"></script>
+</body>
+</html>

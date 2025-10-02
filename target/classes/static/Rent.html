@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PropertyHub - Rent Properties</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="rent.css">
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="header-top">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                PropertyHub
+            </a>
+            <ul class="nav-menu">
+                <li><a href="buy.html">Buy</a></li>
+                <li><a href="rent.html" class="active">Rent</a></li>
+                <li><a href="apartment.html">Sell</a></li>
+                <li><a href="#">Pre-approval</a></li>
+                <li><a href="#">Home Value</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="location.href='index.html#auth-page'">Login</button>
+                <button class="btn btn-signup" onclick="location.href='index.html#auth-page'">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Find Your Perfect Rental</h1>
+        <p>Discover apartments and homes available for rent. Filter by location, price, and amenities to find your ideal rental property.</p>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="container">
+    <div class="filters">
+        <div class="filter-section">
+            <h3>Location</h3>
+            <div class="filter-input">
+                <input type="text" id="location" placeholder="Enter city, neighborhood, or address">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
+
+        <div class="filter-row">
+            <div class="filter-section half">
+                <h3>Category</h3>
+                <div class="select-wrapper">
+                    <select id="category">
+                        <option value="">All Categories</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="Condo">Condo</option>
+                        <option value="House">House</option>
+                        <option value="Townhouse">Townhouse</option>
+                        <option value="Villa">Villa</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-section half">
+                <h3>Price Range</h3>
+                <div class="price-range-container">
+                    <div class="price-slider">
+                        <div class="slider-track"></div>
+                        <input type="range" min="0" max="3000" value="0" class="slider" id="price-min">
+                        <input type="range" min="0" max="3000" value="3000" class="slider" id="price-max">
+                    </div>
+                    <div class="price-values">
+                        <span id="price-min-value">$0</span>
+                        <span class="price-separator">-</span>
+                        <span id="price-max-value">$3000+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-row">
+            <div class="filter-section third">
+                <h3>Bedrooms</h3>
+                <div class="select-wrapper">
+                    <select id="bedrooms">
+                        <option value="">Any</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5+</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-section third">
+                <h3>Bathrooms</h3>
+                <div class="select-wrapper">
+                    <select id="bathrooms">
+                        <option value="">Any</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4+</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-section third">
+                <h3>Move-in Date</h3>
+                <input type="date" id="move-in-date" placeholder="Choose date">
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Amenities</h3>
+            <div class="amenities-container">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="pool">
+                    <span class="checkmark"></span>
+                    Pool
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="gym">
+                    <span class="checkmark"></span>
+                    Gym
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="parking">
+                    <span class="checkmark"></span>
+                    Parking
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="pets-allowed">
+                    <span class="checkmark"></span>
+                    Pets Allowed
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="furnished">
+                    <span class="checkmark"></span>
+                    Furnished
+                </label>
+            </div>
+        </div>
+
+        <div class="filter-row">
+            <div class="filter-section half">
+                <h3>Sort By</h3>
+                <div class="select-wrapper">
+                    <select id="sort-by">
+                        <option value="price-low">Price (Low to High)</option>
+                        <option value="price-high">Price (High to Low)</option>
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-reset" onclick="resetFilters()">Reset</button>
+                <button class="btn-search" onclick="applyFilters()">Search</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Properties Section -->
+<section class="container properties">
+    <h2>Available Rental Properties</h2>
+    <div id="properties-container" class="properties-grid">
+        <!-- Properties will be dynamically loaded here -->
+    </div>
+</section>
+
+<!-- Booking Modal -->
+<div id="booking-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('booking-modal')">&times;</span>
+        <h2>Book This Property</h2>
+        <form id="booking-form">
+            <div class="form-group">
+                <label for="booking-name">Full Name</label>
+                <input type="text" id="booking-name" required>
+            </div>
+            <div class="form-group">
+                <label for="booking-email">Email</label>
+                <input type="email" id="booking-email" required>
+            </div>
+            <div class="form-group">
+                <label for="booking-phone">Phone</label>
+                <input type="tel" id="booking-phone" required>
+            </div>
+            <div class="form-group">
+                <label for="booking-start">Start Date</label>
+                <input type="date" id="booking-start" required>
+            </div>
+            <div class="form-group">
+                <label for="booking-duration">Duration (months)</label>
+                <input type="number" id="booking-duration" min="1" step="1" required placeholder="Enter number of months">
+            </div>
+            <div class="form-group payment-field">
+                <label for="payment-type">Payment Type</label>
+                <select id="payment-type" required>
+                    <option value="">Select Payment Type</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="PayPal">PayPal</option>
+                </select>
+            </div>
+            <div class="payment-fields-group">
+                <div class="form-group payment-field">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" required maxlength="19" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-group payment-field">
+                    <label for="name-on-card">Name on Card</label>
+                    <input type="text" id="name-on-card" required>
+                </div>
+            </div>
+            <div id="price-calculation" class="price-calculation">
+                <div class="price-row"><span>Monthly Rent:</span><span id="monthly-rent">$0</span></div>
+                <div class="price-row"><span>Duration:</span><span id="duration-months">0 months</span></div>
+                <div class="price-row price-total"><span>Total Price:</span><span id="total-price">$0</span></div>
+            </div>
+            <button type="submit" class="btn-primary">Confirm Booking and Pay</button>
+            <button type="button" id="download-pdf" class="btn-secondary" style="display: none;">Download Payment PDF</button>
+        </form>
+    </div>
+</div>
+
+<!-- Notification Toast -->
+<div id="notification-toast" class="toast">
+    <div class="toast-content">
+        <i class="fas fa-check-circle toast-icon"></i>
+        <div class="toast-message">Notification message</div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="dark-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>PropertyHub</h3>
+                <p>Your gateway to premium apartment living. Discover, reserve, and rent your dream home with our comprehensive property management system.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="buy.html">Buy</a></li>
+                    <li><a href="rent.html">Rent</a></li>
+                    <li><a href="apartment.html">Sell</a></li>
+                    <li><a href="#">Pre-approval</a></li>
+                    <li><a href="#">Home Value</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Real Estate Ave, Tampa, FL</li>
+                    <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                    <li><i class="fas fa-envelope"></i> info@propertyhub.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 PropertyHub. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="rent.js"></script>
+
+</body>
+</html>

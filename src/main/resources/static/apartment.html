@@ -1,463 +1,463 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sell Your Property - PropertyHub</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .apartments-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Your Property - PropertyHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .apartments-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
 
-    .apartments-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
+        .apartments-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-    .apartments-header h1 {
-      font-size: 2.5rem;
-      color: #2c3e50;
-      margin-bottom: 10px;
-    }
+        .apartments-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
 
-    .apartments-header p {
-      font-size: 1.1rem;
-      color: #7f8c8d;
-    }
+        .apartments-header p {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
 
-    .apartments-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      margin-bottom: 50px;
-    }
+        .apartments-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
 
-    @media (max-width: 768px) {
-      .apartments-layout {
-        grid-template-columns: 1fr;
-      }
-    }
+        @media (max-width: 768px) {
+            .apartments-layout {
+                grid-template-columns: 1fr;
+            }
+        }
 
-    .apartment-form {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+        .apartment-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
-    .apartment-form h2 {
-      color: #2c3e50;
-      margin-bottom: 20px;
-      font-size: 1.5rem;
-    }
+        .apartment-form h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 600;
-      color: #2c3e50;
-    }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
 
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #e0e0e0;
-      border-radius: 5px;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
-    }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
 
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #3498db;
-    }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
 
-    .form-group textarea {
-      height: 100px;
-      resize: vertical;
-    }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
 
-    .submit-btn {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #3498db, #2980b9);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
 
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-    }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
 
-    .submit-btn:disabled {
-      background: #bdc3c7;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
-    .apartments-list {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+        .apartments-list {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
-    .apartments-list h2 {
-      color: #2c3e50;
-      margin-bottom: 20px;
-      font-size: 1.5rem;
-    }
+        .apartments-list h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
 
-    .apartment-card {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 15px;
-      transition: transform 0.2s ease;
-    }
+        .apartment-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s ease;
+        }
 
-    .apartment-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+        .apartment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
-    .apartment-header {
-      display: flex;
-      justify-content: between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
+        .apartment-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
-    .apartment-type {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #2c3e50;
-    }
+        .apartment-type {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
 
-    .apartment-price {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #e74c3c;
-    }
+        .apartment-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
 
-    .apartment-details {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px;
-      margin: 10px 0;
-    }
+        .apartment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
 
-    .apartment-detail {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: #7f8c8d;
-    }
+        .apartment-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #7f8c8d;
+        }
 
-    .apartment-location {
-      color: #3498db;
-      font-weight: 600;
-    }
+        .apartment-location {
+            color: #3498db;
+            font-weight: 600;
+        }
 
-    .apartment-description {
-      color: #5d6d7e;
-      margin-top: 10px;
-      line-height: 1.4;
-    }
+        .apartment-description {
+            color: #5d6d7e;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
 
-    .success-message {
-      background: #d4edda;
-      color: #155724;
-      padding: 15px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      display: none;
-    }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
 
-    .error-message {
-      background: #f8d7da;
-      color: #721c24;
-      padding: 15px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      display: none;
-    }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
 
-    .loading {
-      text-align: center;
-      color: #7f8c8d;
-      padding: 20px;
-    }
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 20px;
+        }
 
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: #7f8c8d;
-    }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
 
-    .empty-state i {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      color: #bdc3c7;
-    }
-  </style>
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #bdc3c7;
+        }
+    </style>
 </head>
 <body>
 <!-- Header -->
 <header>
-  <div class="container">
-    <div class="header-top">
-      <a href="index.html" class="logo">
-        <i class="fas fa-home"></i>
-        PropertyHub
-      </a>
+    <div class="container">
+        <div class="header-top">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                PropertyHub
+            </a>
 
-      <ul class="nav-menu">
-        <li><a href="index.html">Buy</a></li>
-        <li><a href="index.html">Rent</a></li>
-        <li><a href="apartment.html" class="active">Sell</a></li> <!-- Fixed: apartments.html → apartment.html -->
-        <li><a href="index.html">Pre-approval</a></li>
-        <li><a href="index.html">Home Value</a></li>
-      </ul>
+            <ul class="nav-menu">
+                <li><a href="index.html">Buy</a></li>
+                <li><a href="index.html">Rent</a></li>
+                <li><a href="apartment.html" class="active">Sell</a></li> <!-- Fixed: apartments.html → apartment.html -->
+                <li><a href="index.html">Pre-approval</a></li>
+                <li><a href="index.html">Home Value</a></li>
+            </ul>
 
-      <div class="auth-buttons">
-        <button class="btn btn-login" onclick="location.href='index.html#auth-page'">Login</button>
-        <button class="btn btn-signup" onclick="location.href='index.html#auth-page'">Sign Up</button>
-      </div>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="location.href='index.html#auth-page'">Login</button>
+                <button class="btn btn-signup" onclick="location.href='index.html#auth-page'">Sign Up</button>
+            </div>
+        </div>
     </div>
-  </div>
 </header>
 
 <!-- Main Content -->
 <div class="apartments-container">
-  <div class="apartments-header">
-    <h1>Sell Your Property</h1>
-    <p>List your apartment and reach thousands of potential buyers</p>
-  </div>
-
-  <div class="apartments-layout">
-    <!-- Add Apartment Form -->
-    <div class="apartment-form">
-      <h2><i class="fas fa-plus-circle"></i> List New Property</h2>
-
-      <div class="success-message" id="success-message"></div>
-      <div class="error-message" id="error-message"></div>
-
-      <div class="form-group">
-        <label for="type">Property Type</label>
-        <select id="type" name="type" required>
-          <option value="">Select Type</option>
-          <option value="Apartment">Apartment</option>
-          <option value="Condominium">Condominium</option>
-          <option value="Townhouse">Townhouse</option>
-          <option value="Villa">Villa</option>
-          <option value="Studio">Studio</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="price">Price ($)</label>
-        <input type="number" id="price" name="price" step="0.01" placeholder="Enter price" required>
-      </div>
-
-      <div class="form-group">
-        <label for="bedrooms">Bedrooms</label>
-        <select id="bedrooms" name="bedrooms" required>
-          <option value="">Select bedrooms</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5+</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="location">Location</label>
-        <input type="text" id="location" name="location" placeholder="Enter full address" required>
-      </div>
-
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea id="description" name="description" placeholder="Describe your property..."></textarea>
-      </div>
-
-      <button class="submit-btn" onclick="addApartment()">
-        <i class="fas fa-home"></i> List Property
-      </button>
+    <div class="apartments-header">
+        <h1>Sell Your Property</h1>
+        <p>List your apartment and reach thousands of potential buyers</p>
     </div>
 
-    <!-- Apartments List -->
-    <div class="apartments-list">
-      <h2><i class="fas fa-list"></i> Available Properties</h2>
-      <div id="apartments-container">
-        <div class="loading">
-          <i class="fas fa-spinner fa-spin"></i>
-          <p>Loading properties...</p>
+    <div class="apartments-layout">
+        <!-- Add Apartment Form -->
+        <div class="apartment-form">
+            <h2><i class="fas fa-plus-circle"></i> List New Property</h2>
+
+            <div class="success-message" id="success-message"></div>
+            <div class="error-message" id="error-message"></div>
+
+            <div class="form-group">
+                <label for="type">Property Type</label>
+                <select id="type" name="type" required>
+                    <option value="">Select Type</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Condominium">Condominium</option>
+                    <option value="Townhouse">Townhouse</option>
+                    <option value="Villa">Villa</option>
+                    <option value="Studio">Studio</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price ($)</label>
+                <input type="number" id="price" name="price" step="0.01" placeholder="Enter price" required>
+            </div>
+
+            <div class="form-group">
+                <label for="bedrooms">Bedrooms</label>
+                <select id="bedrooms" name="bedrooms" required>
+                    <option value="">Select bedrooms</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5+</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" placeholder="Enter full address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Describe your property..."></textarea>
+            </div>
+
+            <button class="submit-btn" onclick="addApartment()">
+                <i class="fas fa-home"></i> List Property
+            </button>
         </div>
-      </div>
+
+        <!-- Apartments List -->
+        <div class="apartments-list">
+            <h2><i class="fas fa-list"></i> Available Properties</h2>
+            <div id="apartments-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading properties...</p>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Footer -->
 <footer>
-  <div class="container">
-    <div class="footer-content">
-      <div class="footer-column">
-        <h3>PropertyHub</h3>
-        <p>Your gateway to premium apartment living. Discover, reserve, and purchase your dream home with our comprehensive property management system.</p>
-      </div>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>PropertyHub</h3>
+                <p>Your gateway to premium apartment living. Discover, reserve, and purchase your dream home with our comprehensive property management system.</p>
+            </div>
 
-      <div class="footer-column">
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="index.html">Buy</a></li>
-          <li><a href="index.html">Rent</a></li>
-          <li><a href="apartment.html">Sell</a></li> <!-- Fixed: apartments.html → apartment.html -->
-          <li><a href="index.html">Pre-approval</a></li>
-          <li><a href="index.html">Home Value</a></li>
-        </ul>
-      </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Buy</a></li>
+                    <li><a href="index.html">Rent</a></li>
+                    <li><a href="apartment.html">Sell</a></li> <!-- Fixed: apartments.html → apartment.html -->
+                    <li><a href="index.html">Pre-approval</a></li>
+                    <li><a href="index.html">Home Value</a></li>
+                </ul>
+            </div>
 
-      <div class="footer-column">
-        <h3>Contact Us</h3>
-        <ul>
-          <li><i class="fas fa-map-marker-alt"></i> 123 Real Estate Ave, Tampa, FL</li>
-          <li><i class="fas fa-phone"></i> (555) 123-4567</li>
-          <li><i class="fas fa-envelope"></i> info@propertyhub.com</li>
-        </ul>
-      </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Real Estate Ave, Tampa, FL</li>
+                    <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                    <li><i class="fas fa-envelope"></i> info@propertyhub.com</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="copyright">
+            <p>&copy; 2023 PropertyHub. All rights reserved.</p>
+        </div>
     </div>
-
-    <div class="copyright">
-      <p>&copy; 2023 PropertyHub. All rights reserved.</p>
-    </div>
-  </div>
 </footer>
 
 <script>
-  // API Base URL
-  const API_BASE = 'http://localhost:8080/api/apartments';
+    // API Base URL
+    const API_BASE = 'http://localhost:8080/api/apartments';
 
-  // Display messages
-  function showMessage(elementId, message, isError = false) {
-    const element = document.getElementById(elementId);
-    element.textContent = message;
-    element.style.display = 'block';
-    element.style.background = isError ? '#f8d7da' : '#d4edda';
-    element.style.color = isError ? '#721c24' : '#155724';
+    // Display messages
+    function showMessage(elementId, message, isError = false) {
+        const element = document.getElementById(elementId);
+        element.textContent = message;
+        element.style.display = 'block';
+        element.style.background = isError ? '#f8d7da' : '#d4edda';
+        element.style.color = isError ? '#721c24' : '#155724';
 
-    setTimeout(() => {
-      element.style.display = 'none';
-    }, 5000);
-  }
-
-  // Add apartment function
-  async function addApartment() {
-    const type = document.getElementById('type').value.trim();
-    const price = document.getElementById('price').value.trim();
-    const bedrooms = document.getElementById('bedrooms').value.trim();
-    const location = document.getElementById('location').value.trim();
-    const description = document.getElementById('description').value.trim();
-    const button = document.querySelector('.submit-btn');
-
-    // Validation
-    if (!type || !price || !bedrooms || !location) {
-      showMessage('error-message', 'Please fill in all required fields.', true);
-      return;
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 5000);
     }
 
-    if (isNaN(price) || parseFloat(price) <= 0) {
-      showMessage('error-message', 'Please enter a valid price.', true);
-      return;
+    // Add apartment function
+    async function addApartment() {
+        const type = document.getElementById('type').value.trim();
+        const price = document.getElementById('price').value.trim();
+        const bedrooms = document.getElementById('bedrooms').value.trim();
+        const location = document.getElementById('location').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const button = document.querySelector('.submit-btn');
+
+        // Validation
+        if (!type || !price || !bedrooms || !location) {
+            showMessage('error-message', 'Please fill in all required fields.', true);
+            return;
+        }
+
+        if (isNaN(price) || parseFloat(price) <= 0) {
+            showMessage('error-message', 'Please enter a valid price.', true);
+            return;
+        }
+
+        const apartmentData = {
+            type: type,
+            price: parseFloat(price),
+            bedrooms: parseInt(bedrooms),
+            location: location,
+            description: description
+        };
+
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+
+        try {
+            const response = await fetch(API_BASE + '/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(apartmentData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showMessage('success-message', 'Property listed successfully!');
+                // Clear form
+                document.getElementById('type').value = '';
+                document.getElementById('price').value = '';
+                document.getElementById('bedrooms').value = '';
+                document.getElementById('location').value = '';
+                document.getElementById('description').value = '';
+                // Reload apartments list
+                loadApartments();
+            } else {
+                showMessage('error-message', result.message || 'Failed to add property.', true);
+            }
+        } catch (error) {
+            showMessage('error-message', 'Network error. Please try again.', true);
+            console.error('Error adding apartment:', error);
+        } finally {
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-home"></i> List Property';
+        }
     }
 
-    const apartmentData = {
-      type: type,
-      price: parseFloat(price),
-      bedrooms: parseInt(bedrooms),
-      location: location,
-      description: description
-    };
+    // Load apartments function
+    async function loadApartments() {
+        const container = document.getElementById('apartments-container');
 
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+        try {
+            const response = await fetch(API_BASE);
+            if (!response.ok) throw new Error('Failed to fetch apartments');
 
-    try {
-      const response = await fetch(API_BASE + '/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(apartmentData)
-      });
+            const apartments = await response.json();
 
-      const result = await response.json();
-
-      if (result.success) {
-        showMessage('success-message', 'Property listed successfully!');
-        // Clear form
-        document.getElementById('type').value = '';
-        document.getElementById('price').value = '';
-        document.getElementById('bedrooms').value = '';
-        document.getElementById('location').value = '';
-        document.getElementById('description').value = '';
-        // Reload apartments list
-        loadApartments();
-      } else {
-        showMessage('error-message', result.message || 'Failed to add property.', true);
-      }
-    } catch (error) {
-      showMessage('error-message', 'Network error. Please try again.', true);
-      console.error('Error adding apartment:', error);
-    } finally {
-      button.disabled = false;
-      button.innerHTML = '<i class="fas fa-home"></i> List Property';
-    }
-  }
-
-  // Load apartments function
-  async function loadApartments() {
-    const container = document.getElementById('apartments-container');
-
-    try {
-      const response = await fetch(API_BASE);
-      if (!response.ok) throw new Error('Failed to fetch apartments');
-
-      const apartments = await response.json();
-
-      if (apartments.length === 0) {
-        container.innerHTML = `
+            if (apartments.length === 0) {
+                container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-home"></i>
                         <h3>No Properties Listed</h3>
                         <p>Be the first to list a property!</p>
                     </div>
                 `;
-        return;
-      }
+                return;
+            }
 
-      container.innerHTML = apartments.map(apartment => `
+            container.innerHTML = apartments.map(apartment => `
                 <div class="apartment-card">
                     <div class="apartment-header">
                         <span class="apartment-type">${apartment.type}</span>
@@ -478,19 +478,19 @@
                 </div>
             `).join('');
 
-    } catch (error) {
-      container.innerHTML = `
+        } catch (error) {
+            container.innerHTML = `
                 <div class="error-message">
                     <i class="fas fa-exclamation-triangle"></i>
                     <p>Error loading properties: ${error.message}</p>
                 </div>
             `;
-      console.error('Error loading apartments:', error);
+            console.error('Error loading apartments:', error);
+        }
     }
-  }
 
-  // Load apartments when page loads
-  document.addEventListener('DOMContentLoaded', loadApartments);
+    // Load apartments when page loads
+    document.addEventListener('DOMContentLoaded', loadApartments);
 </script>
 </body>
 </html>
