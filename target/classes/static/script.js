@@ -226,6 +226,38 @@ async function saveProperty(propertyData) {
     }
 }
 
+async function removeProperty(propertyID) {
+    if (!requireAuthentication()) return false;
+
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/user/saved-properties/${propertyID}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`
+            }
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                return true;
+            } else {
+                console.error('Failed to remove property:', result.message);
+                alert('Failed to remove property: ' + result.message);
+                return false;
+            }
+        } else {
+            console.error('Failed to remove property:', response.statusText);
+            alert('Failed to remove property. Please try again.');
+            return false;
+        }
+    } catch (error) {
+        console.error('Failed to remove property:', error);
+        alert('Failed to remove property. Please try again.');
+        return false;
+    }
+}
+
 async function loadUserActivities() {
     const user = JSON.parse(sessionStorage.getItem('currentUser'));
     if (!user) return;
@@ -669,14 +701,18 @@ function setupEventListeners() {
             const propertyCard = e.target.closest('.property-card');
             if (propertyCard) {
                 const address = propertyCard.querySelector('.property-address')?.textContent;
+                const propertyID = propertyCard.dataset.propertyId || propertyCard.querySelector('[data-property-id]')?.dataset.propertyId;
 
                 if (confirm(`Are you sure you want to remove ${address || 'this property'} from your saved properties?`)) {
-                    propertyCard.style.opacity = '0';
-                    setTimeout(() => {
-                        propertyCard.remove();
-                        trackUserActivity('property', 'Removed saved property', { address });
-                        alert('Property removed successfully!');
-                    }, 500);
+                    // Show loading state
+                    propertyCard.style.opacity = '0.5';
+                    const removeBtn = e.target;
+                    const originalText = removeBtn.textContent;
+                    removeBtn.textContent = 'Removing...';
+                    removeBtn.disabled = true;
+
+                    // Always try database removal first, then clean up localStorage if needed
+                    removePropertyUnified(propertyID, address, propertyCard, removeBtn, originalText);
                 }
             }
         }
@@ -695,57 +731,72 @@ function setupEventListeners() {
     setupNavigationInterceptors();
 }
 
-function extractPropertyData(propertyCard) {
-    return {
-        price: propertyCard.querySelector('.property-price')?.textContent,
-        address: propertyCard.querySelector('.property-address')?.textContent,
-        features: propertyCard.querySelector('.property-features')?.textContent
-    };
-}
-
-// ==================== API TESTING ====================
-async function testApiConnection() {
+// Unified remove property function that handles both database and localStorage
+async function removePropertyUnified(propertyID, address, propertyCard, removeBtn, originalText) {
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/auth/test`);
-        if (response.ok) {
-            console.log('API connection test: SUCCESS');
-        } else {
-            console.log('API connection test: FAILED');
-        }
-    } catch (error) {
-        console.log('API connection test: FAILED -', error.message);
-    }
-}
+        console.log('Unified remove called for property ID:', propertyID);
 
-// ==================== INITIALIZATION ====================
-function initializeApp() {
-    clearMessages();
+        // Always try database removal first
+        let databaseRemovalSuccess = false;
 
-    // Test API connection
-    testApiConnection();
-
-    // Check if user is already logged in
-    currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-
-    if (currentUser) {
-        if (currentUser.isAdmin) {
-            // If admin is logged in, redirect to admin panel
-            window.location.href = 'adindex.html';
-        } else {
-            // Update UI for logged-in user
-            updateAllUserDropdowns(currentUser);
-
-            // Load user activities if on account page
-            const accountPage = document.getElementById('account-page');
-            if (accountPage && accountPage.classList.contains('active')) {
-                loadUserActivities();
+        if (propertyID) {
+            try {
+                const success = await removeProperty(propertyID);
+                if (success) {
+                    databaseRemovalSuccess = true;
+                    console.log('Database removal successful');
+                }
+            } catch (dbError) {
+                console.warn('Database removal failed:', dbError.message);
             }
         }
+
+        // If database removal failed, try localStorage cleanup
+        if (!databaseRemovalSuccess && propertyID) {
+            console.log('Attempting localStorage cleanup for property ID:', propertyID);
+
+            let savedProperties = JSON.parse(localStorage.getItem('savedProperties')) || [];
+            const initialLength = savedProperties.length;
+
+            savedProperties = savedProperties.filter(property =>
+                property.apartmentID != propertyID &&
+                property.savedPropertyID != propertyID
+            );
+
+            if (savedProperties.length < initialLength) {
+                localStorage.setItem('savedProperties', JSON.stringify(savedProperties));
+                databaseRemovalSuccess = true; // Treat localStorage removal as success
+                console.log('Property removed from localStorage');
+            }
+        }
+
+        if (databaseRemovalSuccess) {
+            // Remove from DOM only if removal was successful
+            propertyCard.style.opacity = '0';
+            setTimeout(() => {
+                propertyCard.remove();
+                trackUserActivity('property', 'Removed saved property', { address, propertyID });
+                alert('Property removed successfully!');
+            }, 500);
+        } else {
+            // Restore original state if removal failed
+            propertyCard.style.opacity = '1';
+            removeBtn.textContent = originalText;
+            removeBtn.disabled = false;
+            alert('Failed to remove property. Please try again.');
+        }
+
+    } catch (error) {
+        console.error('Error in unified remove:', error);
+        // Restore original state on error
+        propertyCard.style.opacity = '1';
+        removeBtn.textContent = originalText;
+        removeBtn.disabled = false;
+        alert('Failed to remove property. Please try again.');
     }
 }
 
-// ==================== APP START ====================
-document.addEventListener('DOMContentLoaded', function() {
-    setupEventListeners();
-    initializeApp();
-});
+setupEventListeners();
+setupNavigationInterceptors();
+loadUserActivities();
+showPage('home-page');

@@ -441,110 +441,65 @@ input[type="date"]:focus {
 }
 
 .property-image {
-    display: none; /* Hide the old image container since we're using carousel now */
-}
-
-.property-image-carousel {
     position: relative;
     height: 250px;
-    background: linear-gradient(45deg, #27ae60, #2c3e50);
+    background: linear-gradient(45deg, #3498db, #2c3e50);
     overflow: hidden;
-}
-
-.carousel-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.carousel-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    background-color: #f8f9fa;
-}
-
-.carousel-slide[data-active="true"] {
-    opacity: 1;
-    z-index: 1;
-}
-
-.carousel-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-.carousel-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.7);
-    border: none;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    z-index: 2;
-    opacity: 0.7;
-    transition: opacity 0.3s, background-color 0.3s;
 }
 
-.carousel-button:hover {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.9);
-}
-
-.carousel-button.prev {
-    left: 10px;
-}
-
-.carousel-button.next {
-    right: 10px;
-}
-
-.carousel-indicators {
-    position: absolute;
-    bottom: 10px;
+.property-image img {
     width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    z-index: 2;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.carousel-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: background-color 0.3s;
+.property-image:hover img {
+    transform: scale(1.05);
 }
 
-.carousel-indicator[data-active="true"] {
-    background: #ffffff;
-    transform: scale(1.2);
+.property-image i {
+    color: #3498db;
+    opacity: 0.7;
 }
 
 .property-badge {
     position: absolute;
     top: 15px;
     right: 15px;
-    background: #e74c3c;
+    background: #3498db;
     color: white;
     padding: 5px 10px;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
+    z-index: 2;
+}
+
+/* Property Type Info */
+.property-type-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.property-type-badge {
+    background: #ecf0f1;
+    color: #2c3e50;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.property-date {
+    color: #7f8c8d;
+    font-size: 0.8rem;
 }
 
 .property-content {
@@ -815,32 +770,133 @@ footer {
     position: fixed;
     top: 20px;
     right: 20px;
+    background: #2c3e50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
     z-index: 1000;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 0;
-    max-width: 350px;
-    transform: translateY(-100px);
-    opacity: 0;
-    transition: transform 0.3s, opacity 0.3s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    max-width: 300px;
 }
 
 .notification.show {
-    transform: translateY(0);
-    opacity: 1;
+    transform: translateX(0);
 }
 
 .notification-content {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
+    gap: 10px;
 }
 
 .notification-content i {
-    color: #4CAF50;
-    margin-right: 10px;
+    font-size: 16px;
+}
+
+/* Save Button States */
+.btn-save {
+    background: #ecf0f1;
+    color: #2c3e50;
+    border: 2px solid #bdc3c7;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-save:hover {
+    background: #d5dbdb;
+    border-color: #95a5a6;
+}
+
+.btn-save:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Save button when saved successfully */
+.btn-save.saved {
+    background: #27ae60;
+    color: white;
+    border-color: #27ae60;
+}
+
+.btn-save.saved-local {
+    background: #f39c12;
+    color: white;
+    border-color: #f39c12;
+}
+
+.btn-save.already-saved {
+    background: #95a5a6;
+    color: white;
+    border-color: #95a5a6;
+}
+
+/* Property Actions */
+.property-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.property-actions button {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Loading Animation */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Toast Notification Styles */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1001;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    max-width: 350px;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    gap: 12px;
+}
+
+.toast-icon {
+    color: #27ae60;
     font-size: 18px;
+}
+
+.toast-message {
+    color: #2c3e50;
+    font-weight: 500;
 }
 
 /* Responsive */

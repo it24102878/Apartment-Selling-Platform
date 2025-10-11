@@ -6,6 +6,7 @@ import com.propertyhub.auth.repository.SavedPropertyRepository;
 import com.propertyhub.auth.repository.UserActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +50,80 @@ public class UserService {
         return savedPropertyRepository.findByUserIDOrderBySavedAtDesc(userID);
     }
 
+    @Transactional
     public void removeSavedProperty(Long propertyID) {
-        savedPropertyRepository.deleteById(propertyID);
+        System.out.println("UserService: Attempting to remove property with ID: " + propertyID);
+
+        // First try to delete by savedPropertyID (direct database primary key)
+        if (savedPropertyRepository.existsById(propertyID)) {
+            try {
+                savedPropertyRepository.deleteBySavedPropertyID(propertyID);
+                System.out.println("UserService: Property deleted successfully using savedPropertyID: " + propertyID);
+                return;
+            } catch (Exception e) {
+                System.err.println("UserService: Error during direct deletion: " + e.getMessage());
+                throw new RuntimeException("Failed to delete property by savedPropertyID: " + e.getMessage(), e);
+            }
+        }
+
+        // If not found by savedPropertyID, it might be an apartmentID, so we need to find the actual savedPropertyID
+        System.out.println("UserService: Property not found by savedPropertyID, searching by apartmentID in all users' saved properties");
+
+        try {
+            // Get all saved properties and search for matching apartmentID in JSON data
+            List<SavedProperty> allSavedProperties = savedPropertyRepository.findAll();
+            SavedProperty propertyToDelete = null;
+
+            for (SavedProperty savedProp : allSavedProperties) {
+                try {
+                    String propertyDataJson = savedProp.getPropertyData();
+                    if (propertyDataJson != null && propertyDataJson.contains("\"apartmentID\":" + propertyID)) {
+                        propertyToDelete = savedProp;
+                        break;
+                    }
+                } catch (Exception parseError) {
+                    System.out.println("UserService: Error parsing property data for savedPropertyID " + savedProp.getSavedPropertyID());
+                }
+            }
+
+            if (propertyToDelete != null) {
+                savedPropertyRepository.deleteBySavedPropertyID(propertyToDelete.getSavedPropertyID());
+                System.out.println("UserService: Property deleted successfully using apartmentID mapping. SavedPropertyID was: " + propertyToDelete.getSavedPropertyID());
+            } else {
+                System.out.println("UserService: Property not found with apartmentID: " + propertyID);
+                throw new RuntimeException("Property not found with ID: " + propertyID);
+            }
+
+        } catch (Exception e) {
+            System.err.println("UserService: Error during apartmentID-based deletion: " + e.getMessage());
+            throw new RuntimeException("Failed to delete property: " + e.getMessage(), e);
+        }
+    }
+
+    public boolean savedPropertyExists(Long propertyID) {
+        // Check if exists by savedPropertyID first
+        if (savedPropertyRepository.existsById(propertyID)) {
+            return true;
+        }
+
+        // If not found, check if exists by apartmentID in JSON data
+        try {
+            List<SavedProperty> allSavedProperties = savedPropertyRepository.findAll();
+            for (SavedProperty savedProp : allSavedProperties) {
+                try {
+                    String propertyDataJson = savedProp.getPropertyData();
+                    if (propertyDataJson != null && propertyDataJson.contains("\"apartmentID\":" + propertyID)) {
+                        return true;
+                    }
+                } catch (Exception parseError) {
+                    // Continue searching
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error checking property existence: " + e.getMessage());
+        }
+
+        return false;
     }
 
     public Map<String, Object> getUserDashboardData(Long userID) {

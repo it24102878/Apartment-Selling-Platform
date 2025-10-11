@@ -4,6 +4,7 @@ import com.propertyhub.auth.entity.UserActivity;
 import com.propertyhub.auth.entity.SavedProperty;
 import com.propertyhub.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,20 +60,47 @@ public class UserController {
 
         try {
             Long userID = Long.valueOf(propertyData.get("userID").toString());
-            Map<String, Object> propData = (Map<String, Object>) propertyData.get("propertyData");
 
-            String price = propData.get("price").toString();
-            String address = propData.get("address").toString();
-            String features = propData.get("features").toString();
+            // Handle both the new corrected structure and the old structure for backward compatibility
+            Map<String, Object> propData;
+            String price, address, features;
+
+            if (propertyData.containsKey("propertyData") && propertyData.get("propertyData") instanceof Map) {
+                // New corrected structure
+                propData = (Map<String, Object>) propertyData.get("propertyData");
+                price = propData.get("price").toString();
+                address = propData.get("address").toString();
+                features = propData.get("features").toString();
+            } else {
+                // Fallback to old structure for backward compatibility
+                price = propertyData.get("propertyPrice").toString();
+                address = propertyData.get("propertyAddress").toString();
+                features = propertyData.get("propertyFeatures").toString();
+            }
+
+            // Check if property is already saved for this user
+            List<SavedProperty> existingProperties = userService.getSavedProperties(userID);
+            boolean alreadyExists = existingProperties.stream()
+                .anyMatch(sp -> sp.getPropertyAddress().equals(address) &&
+                              sp.getPropertyPrice().equals(price));
+
+            if (alreadyExists) {
+                response.put("success", true);
+                response.put("message", "Property was already saved");
+                response.put("alreadyExists", true);
+                return ResponseEntity.ok(response);
+            }
 
             SavedProperty savedProperty = userService.saveProperty(userID, price, address, features, propertyData.toString());
 
             response.put("success", true);
             response.put("message", "Property saved successfully");
             response.put("savedPropertyID", savedProperty.getSavedPropertyID());
+            response.put("alreadyExists", false);
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Failed to save property: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         return ResponseEntity.ok(response);
@@ -93,12 +121,33 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
 
         try {
+            System.out.println("DELETE request received for propertyID: " + propertyID);
+
+            // Check if property exists before deletion
+            if (!userService.savedPropertyExists(propertyID)) {
+                response.put("success", false);
+                response.put("message", "Property not found with ID: " + propertyID);
+                System.out.println("Property not found: " + propertyID);
+                return ResponseEntity.status(404).body(response);
+            }
+
             userService.removeSavedProperty(propertyID);
-            response.put("success", true);
-            response.put("message", "Property removed successfully");
+
+            // Verify deletion was successful
+            if (!userService.savedPropertyExists(propertyID)) {
+                response.put("success", true);
+                response.put("message", "Property removed successfully");
+                System.out.println("Property successfully removed: " + propertyID);
+            } else {
+                response.put("success", false);
+                response.put("message", "Property deletion failed - still exists in database");
+                System.out.println("Property deletion failed: " + propertyID);
+            }
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Failed to remove property: " + e.getMessage());
+            System.err.println("Error removing property " + propertyID + ": " + e.getMessage());
+            e.printStackTrace();
         }
 
         return ResponseEntity.ok(response);

@@ -19,7 +19,41 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProperties();
     setupEventListeners();
     initializePriceSlider();
+
+    // Create a debounced version of applyFilters for slider input
+    window.debouncedApplyFilters = debounce(() => applyFilters({silent: true}), 300);
 });
+
+// Add event listener to refresh saved properties when page becomes visible
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && propertiesFetched) {
+        // Page became visible again, refresh the display to sync saved states
+        console.log('Page became visible, refreshing saved property states...');
+        displayProperties(cachedProperties);
+    }
+});
+
+// Add event listener to refresh when user navigates back to the page
+window.addEventListener('focus', function() {
+    if (propertiesFetched) {
+        // Page gained focus, refresh the display to sync saved states
+        console.log('Page gained focus, refreshing saved property states...');
+        displayProperties(cachedProperties);
+    }
+});
+
+// Debounce function to prevent excessive filter calls
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(context, args);
+        }, wait);
+    };
+}
 
 // Set up event listeners for form interactions
 function setupEventListeners() {
@@ -56,7 +90,7 @@ function initializePriceSlider() {
             return updateSlider();
         }
         minValue.textContent = formatPriceDisplay(min);
-        maxValue.textContent = max >= 3000000 ? '$3000K+' : formatPriceDisplay(max);
+        maxValue.textContent = max >= 3000 ? '$3000+' : formatPriceDisplay(max);
         const percent1 = ((min - minSlider.min) / (minSlider.max - minSlider.min)) * 100;
         const percent2 = ((max - minSlider.min) / (maxSlider.max - minSlider.min)) * 100;
         if (sliderTrack) {
@@ -70,10 +104,8 @@ function initializePriceSlider() {
 
     // Format price for display
     function formatPriceDisplay(price) {
-        if (price >= 1000000) {
-            return '$' + (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-        } else if (price >= 1000) {
-            return '$' + (price / 1000).toFixed(0) + 'K';
+        if (price >= 1000) {
+            return '$' + (price / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
         } else {
             return '$' + price;
         }
@@ -159,27 +191,109 @@ async function loadProperties() {
     container.innerHTML = '<div style="text-align: center; padding: 40px; color: #7f8c8d;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading properties...</p></div>';
 
     try {
-        const response = await fetch(API_BASE + '/apartments');
-        if (!response.ok) throw new Error('Failed to fetch properties');
-        const apiRaw = await response.json();
-        const normalized = normalizeList(apiRaw);
-        cachedProperties = normalized; // store normalized base
+        // Create an array of sample rental properties that always appear
+        const sampleRentalProperties = [
+            {
+                apartmentID: 4001,
+                type: "Studio",
+                price: 228000, // Will display as $950/mo
+                bedrooms: 0,
+                bathrooms: 1,
+                squareFeet: 0,
+                location: "Downtown Studios, San Francisco",
+                description: "Cozy studio apartment in trendy neighborhood. Walking distance to cafes, shops and public transport.",
+                amenities: { pool: false, gym: true, parking: true, petsAllowed: false, furnished: false }
+            },
+            {
+                apartmentID: 4002,
+                type: "Apartment",
+                price: 288000, // Will display as $1200/mo
+                bedrooms: 1,
+                bathrooms: 1,
+                squareFeet: 750,
+                location: "City Center Lofts, New York",
+                description: "Modern studio apartment in the heart of downtown. Floor-to-ceiling windows, stainless steel appliances, and 24-hour security.",
+                amenities: { pool: false, gym: true, parking: true, petsAllowed: false, furnished: false }
+            },
+            {
+                apartmentID: 4003,
+                type: "Apartment",
+                price: 336000, // Will display as $1400/mo
+                bedrooms: 2,
+                bathrooms: 1,
+                squareFeet: 1500,
+                location: "Harbor View, Seattle",
+                description: "Waterfront apartment with stunning views of the harbor. Recently renovated with modern finishes.",
+                amenities: { pool: false, gym: true, parking: true, petsAllowed: true, furnished: false }
+            },
+            {
+                apartmentID: 4004,
+                type: "Condo",
+                price: 384000, // Will display as $1600/mo
+                bedrooms: 2,
+                bathrooms: 2,
+                squareFeet: 1200,
+                location: "Lakeside Condos, Chicago",
+                description: "Beautiful condo with lake views, modern kitchen, and in-unit laundry.",
+                amenities: { pool: true, gym: true, parking: true, petsAllowed: true, furnished: false }
+            },
+            {
+                apartmentID: 4005,
+                type: "Apartment",
+                price: 420000, // Will display as $1750/mo
+                bedrooms: 3,
+                bathrooms: 2,
+                squareFeet: 1800,
+                location: "Sunset Heights, Miami",
+                description: "Spacious apartment with balcony, pool access, and nearby shopping.",
+                amenities: { pool: true, gym: false, parking: true, petsAllowed: true, furnished: false }
+            }
+        ];
+
+        // Store these properties as cached properties so they persist
+        cachedProperties = sampleRentalProperties;
         propertiesFetched = true;
-        displayProperties(normalized);
+
+        // Try to load from API but don't depend on it
+        try {
+            const response = await fetch(API_BASE + '/apartments');
+            if (response.ok) {
+                const apiRaw = await response.json();
+                const apiProperties = normalizeList(apiRaw);
+                // Combine API properties with sample properties
+                cachedProperties = [...apiProperties, ...sampleRentalProperties];
+            }
+        } catch (apiError) {
+            console.warn('API fetch error:', apiError);
+            // Continue with sample properties only
+        }
+
+        // Always display the cached properties
+        displayProperties(cachedProperties);
+
     } catch (error) {
-        container.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #e74c3c;">
-                <i class="fas fa-exclamation-triangle fa-2x"></i>
-                <p>Error loading properties: ${error.message}</p>
-                <button class="btn-primary" onclick="loadProperties()">Try Again</button>
-            </div>
-        `;
-        console.error('Error loading properties:', error);
+        console.error('Critical error in loadProperties:', error);
+        // Show a meaningful error but still try to display sample properties
+        const fallbackProperties = [
+            {
+                apartmentID: 4001,
+                type: "Studio",
+                price: 228000,
+                bedrooms: 0,
+                bathrooms: 1,
+                squareFeet: 0,
+                location: "Downtown Studios, San Francisco",
+                description: "Cozy studio apartment in trendy neighborhood.",
+                amenities: { pool: false, gym: true, parking: true, petsAllowed: false, furnished: false }
+            }
+        ];
+        cachedProperties = fallbackProperties;
+        displayProperties(fallbackProperties);
     }
 }
 
 // Display properties in the grid
-function displayProperties(properties) {
+async function displayProperties(properties) {
     const container = document.getElementById('properties-container');
 
     if (properties.length === 0) {
@@ -193,58 +307,100 @@ function displayProperties(properties) {
         return;
     }
 
+    // Get current saved properties to check state
+    let savedPropertyIds = new Set();
+
+    try {
+        // Get current user from session storage
+        const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const userId = sessionUser ? sessionUser.userID : currentUserID;
+
+        // Fetch saved properties from database
+        const response = await fetch(`${API_BASE}/saved-properties/user/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
+            }
+        });
+
+        if (response.ok) {
+            const dbProperties = await response.json();
+            dbProperties.forEach(dbProp => {
+                try {
+                    const propertyData = JSON.parse(dbProp.propertyData || '{}');
+                    if (propertyData.apartmentID) {
+                        savedPropertyIds.add(propertyData.apartmentID);
+                    }
+                } catch (parseError) {
+                    console.warn('Error parsing saved property data:', parseError);
+                }
+            });
+        }
+    } catch (error) {
+        console.warn('Error fetching saved properties, using localStorage fallback:', error);
+    }
+
+    // Also check localStorage for saved properties
+    const localSavedProperties = JSON.parse(localStorage.getItem('savedProperties')) || [];
+    localSavedProperties.forEach(prop => {
+        if (prop.apartmentID) {
+            savedPropertyIds.add(prop.apartmentID);
+        }
+    });
+
+    console.log('Current saved property IDs:', Array.from(savedPropertyIds));
+
     // Only display properties returned by the backend API to ensure valid IDs (needed for saving offers)
     const allProperties = properties;
 
     container.innerHTML = allProperties.map(property => {
         const propertyId = property.apartmentID || property.id;
         const propertyType = property.type || 'Apartment';
-        const bathrooms = property.bathrooms || 2; // Default if not provided
-        const squareFeet = property.squareFeet || Math.floor(property.bedrooms * 750); // Estimate if not provided
-        const yearBuilt = property.yearBuilt || 2020; // Default if not provided
+        const bedrooms = property.bedrooms || 0;
+        const bathrooms = property.bathrooms || 1;
+        const squareFeet = property.squareFeet || Math.floor((property.bedrooms + 1) * 500); // Estimate if not provided
 
-        // Calculate mortgage estimate (very rough estimation)
-        const downPayment = property.price * 0.20; // 20% down
-        const loanAmount = property.price - downPayment;
-        const interestRate = 0.045; // 4.5% interest rate
-        const loanTermYears = 30;
-        const monthlyRate = interestRate / 12;
-        const numberOfPayments = loanTermYears * 12;
-        const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-        const roundedMonthlyPayment = Math.round(monthlyPayment);
+        // Calculate monthly price (for display purposes)
+        const monthlyPrice = Math.round(property.price / 240); // Rough estimate for monthly payment
+
+        // Generate image URL based on property type or use existing one
+        const imageUrl = property.imageUrl || generateImageUrl(propertyType, propertyId);
+
+        // Check if this property is currently saved
+        const isSaved = savedPropertyIds.has(propertyId);
+        const heartIcon = isSaved ? 'fas fa-heart' : 'far fa-heart';
+        const saveText = isSaved ? 'Saved' : 'Save';
+        const saveButtonStyle = isSaved ? 'background-color: #27ae60;' : '';
 
         return `
             <div class="property-card" id="property-${propertyId}">
                 <div class="property-image">
-                    <div class="property-badge">FOR SALE</div>
-                    <i class="fas fa-home fa-3x"></i>
+                    <img src="${imageUrl}" alt="${propertyType} in ${property.location}" 
+                         onerror="this.src='https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400'" />
                 </div>
                 <div class="property-content">
-                    <div class="property-header">
-                        <div class="property-price-details">
-                            <div class="property-price">$${property.price.toLocaleString()}</div>
-                            <div class="property-mortgage">Est. $${roundedMonthlyPayment.toLocaleString()}/mo</div>
-                        </div>
-                        <div class="property-address">${property.location}</div>
-                    </div>
+                    <h3 class="property-price">$${monthlyPrice}/mo</h3>
+                    <p class="property-address">${property.location}</p>
                     
                     <div class="property-features">
-                        <span><i class="fas fa-bed"></i> ${property.bedrooms} beds</span>
+                        <span><i class="fas fa-bed"></i> ${bedrooms} beds</span>
                         <span><i class="fas fa-bath"></i> ${bathrooms} baths</span>
-                        <span><i class="fas fa-ruler-combined"></i> ${squareFeet.toLocaleString()} sqft</span>
-                        <span><i class="fas fa-calendar-alt"></i> Built ${yearBuilt}</span>
+                        <span><i class="fas fa-ruler-combined"></i> ${squareFeet} sqft</span>
                     </div>
                     
                     <div class="property-type-info">
                         <span class="property-type-badge">${propertyType}</span>
-                        <span class="property-date">Listed on ${new Date(property.createdAt).toLocaleDateString()}</span>
+                        <span class="property-date">Available Now</span>
                     </div>
                     
-                    ${property.description ? `<div class="property-description">${property.description}</div>` : ''}
+                    <p class="property-description">
+                        ${property.description || `${propertyType} Available Now. Contact for more details.`}
+                    </p>
                     
                     <div class="property-actions">
-                        <button class="btn-purchase" id="purchase-btn-${propertyId}" onclick="openPurchaseModal(${propertyId}, ${property.price})">Make Offer</button>
-                        <button class="btn-save" id="save-btn-${propertyId}" onclick="saveProperty(${propertyId})"><i class="far fa-heart"></i> Save</button>
+                        <button class="btn-book" onclick="openPurchaseModal(${propertyId}, ${property.price})">Book Now</button>
+                        <button class="btn-save" id="save-btn-${propertyId}" onclick="saveProperty(${propertyId}, '${imageUrl}')" style="${saveButtonStyle}">
+                            <i class="${heartIcon}"></i> ${saveText}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -253,45 +409,194 @@ function displayProperties(properties) {
 }
 
 // Save property function
-function saveProperty(propertyId) {
+async function saveProperty(propertyId, imageUrl) {
+    console.log('Save button clicked for property:', propertyId, 'with image URL:', imageUrl);
+
     const saveButton = document.getElementById(`save-btn-${propertyId}`);
     const property = cachedProperties.find(p => p.apartmentID == propertyId) || getSampleProperties().find(p => p.apartmentID == propertyId);
 
     if (!property) {
         console.error('Property not found:', propertyId);
+        showNotification('❌ Error: Property not found!');
         return;
     }
 
-    // Get existing saved properties from localStorage
-    let savedProperties = JSON.parse(localStorage.getItem('savedProperties')) || [];
+    // Show loading state
+    const originalButtonContent = saveButton.innerHTML;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    saveButton.disabled = true;
 
-    // Check if this property is already saved
-    const isAlreadySaved = savedProperties.some(p => p.apartmentID == propertyId);
+    try {
+        console.log('Making API call to save property to database...');
 
-    if (isAlreadySaved) {
-        // Remove from saved properties
-        savedProperties = savedProperties.filter(p => p.apartmentID != propertyId);
-        localStorage.setItem('savedProperties', JSON.stringify(savedProperties));
-        saveButton.innerHTML = '<i class="far fa-heart"></i> Save';
-        saveButton.style.backgroundColor = '#3498db';
-        showNotification('Property removed from favorites!');
-    } else {
-        // Add current date to property
-        property.savedDate = new Date().toISOString();
-        // Add to saved properties
-        savedProperties.push(property);
-        localStorage.setItem('savedProperties', JSON.stringify(savedProperties));
-        saveButton.innerHTML = '<i class="fas fa-heart"></i> Saved';
-        saveButton.style.backgroundColor = '#e74c3c';
-        showNotification('Property saved to your favorites!');
+        // Get current user ID (this should be dynamic in a real app)
+        const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const userId = sessionUser ? sessionUser.userID : currentUserID || 1;
 
-        // Log the activity
-        logUserActivity('property', 'Saved property');
+        // Prepare data to save to SavedProperties table
+        const propertyDataForSave = {
+            apartmentID: propertyId,
+            type: property.type || 'Property',
+            price: property.price,
+            bedrooms: property.bedrooms || 0,
+            bathrooms: property.bathrooms || 1,
+            location: property.location,
+            description: property.description || '',
+            imageUrl: imageUrl,
+            savedDate: new Date().toISOString(),
+            source: 'buy-page'
+        };
 
-        // Redirect to dashboard after a short delay to show notification
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 1000);
+        const saveData = {
+            userID: userId,
+            propertyPrice: property.price.toString(),
+            propertyAddress: property.location,
+            propertyFeatures: `${property.bedrooms || 0} bed, ${property.bathrooms || 1} bath, ${property.type || 'Property'}`,
+            propertyData: propertyDataForSave
+        };
+
+        console.log('Sending data to SavedProperties API:', saveData);
+
+        // Test server connectivity first
+        try {
+            const healthCheck = await fetch(`${API_BASE}/saved-properties/user/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
+                }
+            });
+
+            if (!healthCheck.ok && healthCheck.status !== 404) {
+                throw new Error(`Server unreachable. Status: ${healthCheck.status}`);
+            }
+        } catch (connectError) {
+            console.error('Server connectivity test failed:', connectError);
+            throw new Error('Cannot connect to server. Please check if the application server is running.');
+        }
+
+        // Save to SavedProperties table
+        const response = await fetch(`${API_BASE}/saved-properties`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify(saveData)
+        });
+
+        console.log('API Response status:', response.status);
+        console.log('API Response ok:', response.ok);
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Property save response:', result);
+
+            // Verify the response indicates actual success
+            if (result.success === true) {
+                const isAlreadySaved = result.alreadyExists === true;
+                const successMessage = isAlreadySaved ?
+                    'Property was already in your favorites!' :
+                    'Property saved to database successfully!';
+
+                // Update button appearance
+                saveButton.innerHTML = '<i class="fas fa-heart"></i> Saved';
+                saveButton.style.backgroundColor = '#27ae60';
+                saveButton.disabled = false;
+                showNotification(`✅ ${successMessage}`);
+
+                // Also save to localStorage for backup
+                let savedProperties = JSON.parse(localStorage.getItem('savedProperties')) || [];
+                if (!savedProperties.some(p => p.apartmentID == propertyId)) {
+                    propertyDataForSave.savedPropertyID = result.savedPropertyID;
+                    savedProperties.push(propertyDataForSave);
+                    localStorage.setItem('savedProperties', JSON.stringify(savedProperties));
+                }
+
+                // Log the activity
+                logUserActivity('property', isAlreadySaved ?
+                    'Property was already saved in database' :
+                    'Property saved to database successfully');
+
+                // Redirect to dashboard after a short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+
+            } else {
+                // Server responded but indicated failure
+                throw new Error(result.message || 'Server reported save failed');
+            }
+        } else {
+            // HTTP error response
+            let errorMessage = `HTTP ${response.status}`;
+            try {
+                const errorData = await response.json();
+                errorMessage += `: ${errorData.message || 'Unknown error'}`;
+            } catch (parseErr) {
+                const errorText = await response.text();
+                errorMessage += `: ${errorText || 'Failed to save property'}`;
+            }
+            throw new Error(errorMessage);
+        }
+
+    } catch (error) {
+        console.error('Error saving property to database:', error);
+
+        // Reset button state
+        saveButton.innerHTML = originalButtonContent;
+        saveButton.disabled = false;
+
+        // Show specific error messages
+        if (error.message.includes('connect') || error.message.includes('fetch') ||
+            error.message.includes('Server unreachable') || error.message.includes('NetworkError')) {
+            showNotification('⚠️ Server not running! Property saved locally only.');
+            console.warn('Server appears to be down, falling back to localStorage');
+
+            // Fallback to localStorage only
+            fallbackToLocalStorage(property, propertyId, imageUrl, saveButton);
+        } else {
+            showNotification(`❌ Database error: ${error.message}`);
+        }
+    }
+}
+
+// Fallback function to save to localStorage when server is unavailable
+function fallbackToLocalStorage(property, propertyId, imageUrl, saveButton) {
+    try {
+        let savedProperties = JSON.parse(localStorage.getItem('savedProperties')) || [];
+        const isAlreadySaved = savedProperties.some(p => p.apartmentID == propertyId);
+
+        if (isAlreadySaved) {
+            saveButton.innerHTML = '<i class="fas fa-heart"></i> Already Saved';
+            saveButton.style.backgroundColor = '#f39c12';
+            showNotification('Property was already saved locally!');
+        } else {
+            // Add to localStorage
+            const localProperty = {
+                ...property,
+                apartmentID: propertyId,
+                savedDate: new Date().toISOString(),
+                imageUrl: imageUrl,
+                source: 'buy-page'
+            };
+            savedProperties.push(localProperty);
+            localStorage.setItem('savedProperties', JSON.stringify(savedProperties));
+
+            saveButton.innerHTML = '<i class="fas fa-heart"></i> Saved Locally';
+            saveButton.style.backgroundColor = '#f39c12';
+            showNotification('✅ Property saved locally! Will sync when server is available.');
+
+            logUserActivity('property', 'Property saved locally (server unavailable)');
+
+            // Redirect to dashboard after a short delay
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        }
+    } catch (localError) {
+        console.error('Failed to save to localStorage:', localError);
+        showNotification('❌ Failed to save property anywhere!');
     }
 }
 
@@ -369,19 +674,9 @@ function applyFilters(options = {}) {
     // Function to fetch and filter properties
     async function fetchAndFilterProperties() {
         try {
-            let baseList = [];
-            if (propertiesFetched) {
-                baseList = [...cachedProperties];
-            } else {
-                const response = await fetch(API_BASE + '/apartments');
-                if (!response.ok) throw new Error('Failed to fetch properties');
-                const apiRaw = await response.json();
-                const normalized = normalizeList(apiRaw);
-                cachedProperties = normalized;
-                propertiesFetched = true;
-                baseList = [...normalized];
-            }
-            const allProperties = [...baseList, ...getSampleProperties()];
+            // Use the cached properties that we know are loaded
+            const allProperties = cachedProperties.length > 0 ? cachedProperties : getSampleProperties();
+            console.log('All properties to filter:', allProperties.length);
 
             // Apply filters
             const filteredProperties = allProperties.filter(property => {
@@ -401,10 +696,18 @@ function applyFilters(options = {}) {
                     return false;
                 }
 
-                // Fix: Improved price range filtering logic
-                if (!isNaN(minPrice) && !isNaN(maxPrice) && (propertyPrice < minPrice || propertyPrice > maxPrice)) {
-                    console.log(`Filtering out property: $${propertyPrice} (outside range $${minPrice}-$${maxPrice})`);
-                    return false;
+                // Convert UI slider values (0-3000) to actual property prices
+                // The slider uses a scale of 0-3000 but properties are priced in full dollars
+                const actualMinPrice = minPrice * 1000; // Convert $0-$3000 to $0-$3000000
+                const actualMaxPrice = maxPrice >= 3000 ? Number.MAX_SAFE_INTEGER : maxPrice * 1000;
+
+                console.log(`Property price: $${propertyPrice}, Range: $${actualMinPrice}-$${actualMaxPrice}`);
+
+                // Filter by price (if both min and max are valid numbers)
+                if (!isNaN(actualMinPrice) && !isNaN(actualMaxPrice)) {
+                    if (propertyPrice < actualMinPrice || (maxPrice < 3000 && propertyPrice > actualMaxPrice)) {
+                        return false;
+                    }
                 }
 
                 // Filter by bedrooms (if specified)
@@ -445,6 +748,8 @@ function applyFilters(options = {}) {
                 // All filters passed
                 return true;
             });
+
+            console.log(`Filtered to ${filteredProperties.length} properties`);
 
             // Sort properties
             sortProperties(filteredProperties, sortBy);
@@ -827,3 +1132,20 @@ const debouncedApplyFilters = debounce(() => {
         applyFilters({silent: true});
     }
 }, 350);
+
+// Generate a placeholder image URL based on property type
+function generateImageUrl(propertyType, propertyId) {
+    const imageUrls = {
+        'Studio': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400',
+        'Apartment': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400',
+        'Condo': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400',
+        'House': 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400',
+        'Townhouse': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
+        'Villa': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400',
+        'Penthouse': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400',
+        'Mansion': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400',
+        'Ranch': 'https://images.unsplash.com/photo-1598228723793-52759bba239c?w=400'
+    };
+
+    return imageUrls[propertyType] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400';
+}

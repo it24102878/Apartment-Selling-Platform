@@ -31,5 +31,17 @@ public class ApartmentService {
         apartmentRepository.deleteById(apartmentID);
     }
 
+    public boolean updateApartmentDescription(Integer apartmentID, String imageUrl) {
+        Optional<Apartment> optionalApartment = apartmentRepository.findById(apartmentID);
 
+        if (optionalApartment.isPresent()) {
+            Apartment apartment = optionalApartment.get();
+            // Update the description with the image URL
+            apartment.setDescription(imageUrl);
+            apartmentRepository.save(apartment);
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -61,4 +61,37 @@ public class ApartmentController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{id}/description")
+    public ResponseEntity<Map<String, Object>> updateApartmentDescription(
+            @PathVariable Integer id,
+            @RequestBody Map<String, String> requestData) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String imageUrl = requestData.get("imageUrl");
+            if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Image URL is required");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            boolean updated = apartmentService.updateApartmentDescription(id, imageUrl);
+
+            if (updated) {
+                response.put("success", true);
+                response.put("message", "Apartment description updated with image URL");
+            } else {
+                response.put("success", false);
+                response.put("message", "Apartment not found");
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to update apartment: " + e.getMessage());
+            System.err.println("Exception in updateApartmentDescription: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok(response);
+    }
 }

@@ -68,12 +68,12 @@
                     <label>Price Range</label>
                     <div class="price-range-container">
                         <div class="slider-track"></div>
-                        <input type="range" min="50000" max="3000000" value="50000" step="25000" class="slider" id="price-min">
-                        <input type="range" min="50000" max="3000000" value="3000000" step="25000" class="slider" id="price-max">
+                        <input type="range" min="0" max="3000" value="0" step="50" class="slider" id="price-min">
+                        <input type="range" min="0" max="3000" value="3000" step="50" class="slider" id="price-max">
                         <div class="price-values">
-                            <span id="price-min-value">$50K</span>
+                            <span id="price-min-value">$0</span>
                             <span class="price-separator">-</span>
-                            <span id="price-max-value">$3000K+</span>
+                            <span id="price-max-value">$3000+</span>
                         </div>
                     </div>
                 </div>
@@ -201,69 +201,55 @@
                 <input type="number" id="purchase-offer" required min="1000">
             </div>
             <div class="form-group">
-                <label for="move-in-date">Desired Closing Date</label>
-                <input type="date" id="move-in-date" required>
+                <div class="offer-calculation">
+                    <span>Your Offer:</span>
+                    <span class="offer-value">$<span id="offer-amount">0</span></span>
+                </div>
+                <div class="offer-calculation">
+                    <span>Difference from Asking:</span>
+                    <span class="offer-value" id="difference-amount">$0</span>
+                </div>
             </div>
             <div class="form-group">
-                <label for="financing-type">Financing Type</label>
-                <select id="financing-type" required>
-                    <option value="">Select Financing</option>
-                    <option value="cash">Cash</option>
-                    <option value="conventional">Conventional Loan</option>
-                    <option value="fha">FHA Loan</option>
-                    <option value="va">VA Loan</option>
+                <label for="payment-type">Payment Method</label>
+                <select id="purchase-type" required>
+                    <option value="">Select payment method</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Mortgage">Mortgage</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label for="purchase-comments">Additional Comments</label>
-                <textarea id="purchase-comments" rows="3"></textarea>
+            <div id="card-details">
+                <div class="form-group">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX">
+                </div>
+                <div class="form-group">
+                    <label for="name-on-card">Name on Card</label>
+                    <input type="text" id="name-on-card">
+                </div>
             </div>
-            <button type="submit" class="btn submit-btn">Submit Offer</button>
+            <button type="submit" class="btn-primary">Submit Offer</button>
         </form>
     </div>
 </div>
 
-<!-- Notification Toast -->
-<div id="notification-toast" class="toast">
-    <div class="toast-content">
-        <i class="fas fa-check-circle toast-icon"></i>
-        <div class="toast-message">Notification message</div>
+<!-- Success Modal -->
+<div id="success-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('success-modal')">&times;</span>
+        <div class="success-message">
+            <i class="fas fa-check-circle"></i>
+            <h2>Purchase Successful!</h2>
+            <p>Your payment has been processed and your purchase is confirmed.</p>
+            <p>Purchase ID: <span id="purchase-id"></span></p>
+            <p>You will receive a confirmation email shortly.</p>
+            <button class="btn-primary" onclick="closeModal('success-modal')">Close</button>
+        </div>
     </div>
 </div>
 
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-column">
-                <h3>PropertyHub</h3>
-                <p>Your gateway to premium property ownership. Find your dream home today!</p>
-            </div>
-            <div class="footer-column">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="buy.html">Buy</a></li>
-                    <li><a href="rent.html">Rent</a></li>
-                    <li><a href="apartment.html">Sell</a></li>
-                    <li><a href="#">Pre-approval</a></li>
-                    <li><a href="#">Home Value</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Contact Us</h3>
-                <ul>
-                    <li><i class="fas fa-map-marker-alt"></i> 123 Real Estate Ave, Tampa, FL</li>
-                    <li><i class="fas fa-phone"></i> (555) 123-4567</li>
-                    <li><i class="fas fa-envelope"></i> info@propertyhub.com</li>
-                </ul>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2025 PropertyHub. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
+<!-- Scripts -->
 <script src="buy.js"></script>
 
 </body>
