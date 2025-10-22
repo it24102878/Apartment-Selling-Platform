@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - PropertyHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            /* Light Mode Variables */
+            --bg-primary-light: #F9FAFB;
+            --bg-secondary-light: #FFFFFF;
+            --text-primary-light: #111827;
+            --text-secondary-light: #6B7280;
+            --primary-light: #4F46E5;
+            --secondary-light: #06B6D4;
+            --accent-light: #F59E0B;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-light: rgba(79, 70, 229, 0.1);
+            --success-light: #22C55E;
+            --error-light: #EF4444;
+
+            /* Dark Mode Variables */
+            --bg-primary-dark: #1F2937;
+            --bg-secondary-dark: #374151;
+            --text-primary-dark: #F3F4F6;
+            --text-secondary-dark: #D1D5DB;
+            --primary-dark: #818CF8;
+            --secondary-dark: #22D3EE;
+            --accent-dark: #FBBF24;
+            --shadow-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --border-dark: rgba(129, 140, 248, 0.2);
+            --success-dark: #4ADE80;
+            --error-dark: #F87171;
+
+            /* Default to Light Mode */
+            --bg-primary: var(--bg-primary-light);
+            --bg-secondary: var(--bg-secondary-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --accent: var(--accent-light);
+            --shadow: var(--shadow-light);
+            --border: var(--border-light);
+            --success: var(--success-light);
+            --error: var(--error-light);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: var(--bg-primary-dark);
+            --bg-secondary: var(--bg-secondary-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --accent: var(--accent-dark);
+            --shadow: var(--shadow-dark);
+            --border: var(--border-dark);
+            --success: var(--success-dark);
+            --error: var(--error-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--bg-secondary);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            margin-right: 12px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin: 0 20px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--primary);
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 16px;
+        }
+
+        .btn-login {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-right: 12px;
+        }
+
+        .btn-signup {
+            background-color: var(--primary);
+            color: var(--bg-secondary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-login:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            transform: translateY(-2px);
+        }
+
+        .btn-signup:hover {
+            background-color: var(--primary-dark, #4338CA);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            transform: scale(1.1);
+        }
+
+        /* User Dropdown Styles */
+        .user-dropdown {
+            position: relative;
+            display: none;
+        }
+
+        .user-trigger {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+
+        .user-trigger:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-name {
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .dropdown-arrow {
+            color: var(--primary);
+            font-size: 14px;
+            transition: transform 0.3s;
+        }
+
+        .user-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            min-width: 280px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            margin-top: 8px;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-avatar-large {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name-large {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 18px;
+        }
+
+        .user-email {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0 12px;
+        }
+
+        .dropdown-menu-items {
+            padding: 12px 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        .dropdown-menu-items a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .dropdown-menu-items a:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            color: var(--primary);
+        }
+
+        .dropdown-menu-items i {
+            width: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .dropdown-menu-items a:hover i {
+            color: var(--primary);
+        }
+
+        .dropdown-footer {
+            padding: 12px 24px 24px;
+        }
+
+        .btn-logout-dropdown {
+            width: 100%;
+            padding: 12px;
+            background: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            color: var(--error);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-logout-dropdown:hover {
+            background: rgba(var(--error-rgb, 239, 68, 68), 0.05);
+            border-color: var(--error);
+        }
+
+        /* Dashboard-specific styles */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .activities-panel {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .activities-panel h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .activity-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-type {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .activity-details {
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .saved-properties {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .saved-property-card {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .saved-property-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .property-image {
+            height: 180px;
+            background-color: #dff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .property-content {
+            padding: 15px;
+        }
+
+        .property-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .property-address {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .property-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .property-features span {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .property-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-view {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-remove {
+            background-color: var(--error);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--bg-secondary);
+            padding: 60px 0 40px;
+            border-top: 1px solid var(--border);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .footer-column p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--primary);
+        }
+
+        .footer-column ul li i {
+            color: var(--secondary);
+            width: 20px;
+        }
+
+        .copyright {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Auth Modal Styles (included for consistency, though may not be used on dashboard) */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-modal.show {
+            display: flex;
+        }
+
+        .auth-container {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            width: 100%;
+            max-width: 960px;
+            min-height: 640px;
+            display: flex;
+            position: relative;
+            margin: 24px;
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+    <script src="profile-avatar.js"></script>
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="header-top">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                PropertyHub
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="buy.html" onclick="checkAuth('buy')">Buy</a></li>
+                <li><a href="Rent.html" onclick="checkAuth('rent')">Rent</a></li>
+                <li><a href="apartment.html" onclick="checkAuth('sell')">Sell</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            </ul>
+
+            <div class="auth-buttons" id="auth-buttons">
+                <button class="btn btn-login" onclick="showAuth('login')">Login</button>
+                <button class="btn btn-signup" onclick="showAuth('signup')">Sign Up</button>
+            </div>
+
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-trigger" onclick="toggleUserMenu()">
+                    <span class="user-name" id="user-name"></span>
+                    <div class="user-avatar" id="user-avatar"></div>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </div>
+                <div class="user-dropdown-menu" id="user-menu">
+                    <div class="dropdown-header">
+                        <div class="user-avatar-large" id="user-avatar-large"></div>
+                        <div class="user-details">
+                            <span class="user-name-large" id="user-name-large"></span>
+                            <span class="user-email" id="user-email"></span>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <ul class="dropdown-menu-items">
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+                        <li><a href="dashboard.html" onclick="checkAuth('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="apartment.html" onclick="checkAuth('sell')"><i class="fas fa-home"></i> Sell</a></li>
+                    </ul>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-footer">
+                        <button class="btn-logout-dropdown" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="theme-toggle" class="theme-toggle"></button>
+        </div>
+    </div>
+</header>
+
+<!-- Dashboard Content -->
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>User Dashboard</h1>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3 class="stat-title">Saved Properties</h3>
+            <div class="stat-value" id="savedPropertiesCount">3</div>
+        </div>
+        <div class="stat-card">
+            <h3 class="stat-title">Recent Activities</h3>
+            <div class="stat-value" id="recentActivitiesCount">5</div>
+        </div>
+    </div>
+
+    <!-- Activities Panel -->
+    <div class="activities-panel">
+        <h2>Recent Activities</h2>
+
+        <div id="activitiesList">
+            <div class="activity-item">
+                <div class="activity-type">navigation:</div>
+                <div class="activity-details">Accessed dashboard page</div>
+                <div class="activity-time">10/1/2025, 11:14:12 PM</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-type">property:</div>
+                <div class="activity-details">Saved property</div>
+                <div class="activity-time">10/1/2025, 11:14:12 PM</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-type">authentication:</div>
+                <div class="activity-details">User logged in</div>
+                <div class="activity-time">10/1/2025, 11:14:12 PM</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved Properties Section -->
+    <div class="activities-panel">
+        <h2>Saved Properties</h2>
+
+        <div id="savedPropertiesContainer" class="saved-properties">
+            <!-- Saved properties will be loaded here by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>PropertyHub</h3>
+                <p>Your gateway to premium apartment living. Discover, reserve, and purchase your dream home with our comprehensive property management system.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="buy.html">Buy</a></li>
+                    <li><a href="rent.html">Rent</a></li>
+                    <li><a href="apartment.html">Sell</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Real Estate Ave, Tampa, FL</li>
+                    <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                    <li><i class="fas fa-envelope"></i> info@propertyhub.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 PropertyHub. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Auth Modal (for consistency) -->
+<div id="auth-modal" class="auth-modal">
+    <div class="auth-container">
+        <!-- Add auth sidebar and forms from index.html if needed, but omitted for dashboard focus -->
+    </div>
+</div>
+
+<script>
+    // Merged JavaScript from dashboard.js and relevant parts from index.html
+
+    // Theme Management
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeToggle(savedTheme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        localStorage.setItem('theme', currentTheme);
+        updateThemeToggle(currentTheme);
+    }
+
+    function updateThemeToggle(theme) {
+        const toggle = document.getElementById('theme-toggle');
+        toggle.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+
+    // Authentication check for navigation
+    function checkAuth(page) {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
+        if (currentUser) {
+            // User is authenticated, redirect to the page
+            switch(page) {
+                case 'buy':
+                    window.location.href = 'buy.html';
+                    break;
+                case 'rent':
+                    window.location.href = 'Rent.html';
+                    break;
+                case 'sell':
+                    window.location.href = 'apartment.html';
+                    break;
+            }
+        } else {
+            // User not authenticated, redirect to login page
+            window.location.href = 'index.html';
+        }
+    }
+
+    // Dashboard JavaScript
+    const API_BASE = 'http://localhost:8080/api';
+
+    const savedPropertiesContainer = document.getElementById('savedPropertiesContainer');
+    const savedPropertiesCount = document.getElementById('savedPropertiesCount');
+    const recentActivitiesCount = document.getElementById('recentActivitiesCount');
+    const activitiesList = document.getElementById('activitiesList');
+
+    let currentUser = (function() {
+        try {
+            const s = sessionStorage.getItem('currentUser');
+            if (s) return JSON.parse(s);
+            const l = localStorage.getItem('currentUser');
+            if (l) return JSON.parse(l);
+        } catch (e) { console.warn('Failed to parse stored currentUser', e); }
+        return null;
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeTheme();
+
+        if (currentUser) {
+            document.getElementById('auth-buttons').style.display = 'none';
+            document.getElementById('userDropdown').style.display = 'inline-block';
+            document.getElementById('user-name').textContent = currentUser.name || currentUser.email || 'User';
+            document.getElementById('user-name-large').textContent = currentUser.name || currentUser.email || 'User';
+            document.getElementById('user-email').textContent = currentUser.email || '';
+            // Update avatars with profile pictures
+            updateUserAvatars(currentUser);
+        }
+
+        function updateUserAvatars(user) {
+            const savedPicture = getUserProfilePicture(user.userID);
+            const userAvatar = document.getElementById('user-avatar');
+            const userAvatarLarge = document.getElementById('user-avatar-large');
+
+            if (savedPicture) {
+                // Replace with image elements
+                userAvatar.innerHTML = `<img src="${savedPicture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">`;
+                userAvatarLarge.innerHTML = `<img src="${savedPicture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">`;
+            } else {
+                // Show initials
+                const initials = getUserInitials(user.name || user.email);
+                userAvatar.textContent = initials;
+                userAvatarLarge.textContent = initials;
+            }
+        }
+
+        loadSavedProperties();
+
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                document.getElementById('user-menu').classList.remove('show');
+                dropdown.classList.remove('active');
+            }
+        });
+
+        logActivity('navigation', 'Accessed dashboard page');
+    });
+
+    function toggleUserMenu() {
+        const userMenu = document.getElementById('user-menu');
+        const dropdown = document.querySelector('.user-dropdown');
+        userMenu.classList.toggle('show');
+        dropdown.classList.toggle('active');
+    }
+
+    async function loadSavedProperties() {
+        try {
+            let sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
+
+            if (!sessionUser) {
+                sessionUser = JSON.parse(localStorage.getItem('currentUser'));
+            }
+
+            const userId = sessionUser ? sessionUser.userID || sessionUser.id : 1;
+
+            console.log('Dashboard: Loading saved properties for user:', userId);
+            console.log('Dashboard: Session user:', sessionUser);
+            console.log('Dashboard: Using user ID:', userId);
+
+            if (!sessionStorage.getItem('authToken') && !localStorage.getItem('authToken')) {
+                sessionStorage.setItem('authToken', 'default-token');
+                console.log('Dashboard: Set default auth token for database access');
+            }
+
+            let savedProperties = [];
+            let dbLoadSuccess = false;
+
+            try {
+                console.log('Dashboard: Attempting to fetch from:', `${API_BASE}/saved-properties/user/${userId}`);
+
+                const response = await fetch(`${API_BASE}/user/saved-properties/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken') || 'default-token'}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Dashboard: Database response status:', response.status);
+                console.log('Dashboard: Database response ok:', response.ok);
+
+                if (response.ok) {
+                    const dbProperties = await response.json();
+                    console.log('Dashboard: Raw database response:', dbProperties);
+                    console.log('Dashboard: Loaded properties from database:', dbProperties.length);
+
+                    if (Array.isArray(dbProperties) && dbProperties.length > 0) {
+                        dbLoadSuccess = true;
+
+                        savedProperties = dbProperties.map(dbProp => {
+                            console.log('Dashboard: Processing database property:', dbProp);
+
+                            try {
+                                const propertyData = dbProp.propertyData ? JSON.parse(dbProp.propertyData) : {};
+                                console.log('Dashboard: Parsed property data:', propertyData);
+
+                                const isRental = propertyData.propertyType === 'RENTAL' ||
+                                    propertyData.isRental === true ||
+                                    propertyData.source === 'rent-page' ||
+                                    (dbProp.propertyFeatures && dbProp.propertyFeatures.includes('(RENTAL)')) ||
+                                    (dbProp.propertyFeatures && dbProp.propertyFeatures.includes('RENTAL'));
+
+                                const convertedProperty = {
+                                    savedPropertyID: dbProp.savedPropertyID,
+                                    apartmentID: propertyData.apartmentID || 0,
+                                    type: propertyData.type || 'Property',
+                                    price: propertyData.price || parseFloat(dbProp.propertyPrice) || 0,
+                                    bedrooms: propertyData.bedrooms || 0,
+                                    bathrooms: propertyData.bathrooms || 1,
+                                    location: dbProp.propertyAddress || propertyData.location || propertyData.address || 'Unknown location',
+                                    description: propertyData.description || '',
+                                    savedDate: dbProp.savedAt || propertyData.savedDate,
+                                    imageUrl: propertyData.imageUrl || null,
+                                    propertyType: isRental ? 'RENTAL' : (propertyData.propertyType || null),
+                                    isRental: isRental,
+                                    source: propertyData.source || 'database',
+                                    features: dbProp.propertyFeatures || propertyData.features || '',
+                                    fromDatabase: true
+                                };
+
+                                console.log('Dashboard: Converted property:', convertedProperty);
+                                return convertedProperty;
+
+                            } catch (parseError) {
+                                console.warn('Dashboard: Error parsing property data for savedPropertyID', dbProp.savedPropertyID, ':', parseError);
+
+                                const isRentalFromFeatures = dbProp.propertyFeatures &&
+                                    (dbProp.propertyFeatures.includes('(RENTAL)') || dbProp.propertyFeatures.includes('RENTAL'));
+
+                                return {
+                                    savedPropertyID: dbProp.savedPropertyID,
+                                    apartmentID: 0,
+                                    type: 'Property',
+                                    price: parseFloat(dbProp.propertyPrice) || 0,
+                                    bedrooms: 0,
+                                    bathrooms: 1,
+                                    location: dbProp.propertyAddress || 'Unknown location',
+                                    description: 'Property data not available',
+                                    savedDate: dbProp.savedAt,
+                                    propertyType: isRentalFromFeatures ? 'RENTAL' : null,
+                                    isRental: isRentalFromFeatures,
+                                    features: dbProp.propertyFeatures || '',
+                                    fromDatabase: true
+                                };
+                            }
+                        });
+                    } else {
+                        console.log('Dashboard: Database returned empty array or invalid data');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    console.warn('Dashboard: Database request failed:', response.status, errorText);
+                    if (response.status === 404) {
+                        console.log('Dashboard: No saved properties found in database for user', userId);
+                    }
+                }
+            } catch (dbError) {
+                console.error('Dashboard: Database connection error:', dbError);
+                console.log('Dashboard: Will fall back to localStorage data only');
+            }
+
+            const localProperties = JSON.parse(localStorage.getItem('savedProperties')) || [];
+            console.log('Dashboard: Found local properties:', localProperties.length);
+
+            if (!dbLoadSuccess && localProperties.length === 0) {
+                console.log('Dashboard: No data found in database or localStorage');
+            }
+
+            const dbApartmentIds = new Set(savedProperties.map(p => p.apartmentID));
+            const uniqueLocalProperties = localProperties
+                .filter(localProp => !dbApartmentIds.has(localProp.apartmentID))
+                .map(prop => ({
+                    ...prop,
+                    propertyType: prop.propertyType || (prop.isRental ? 'RENTAL' : null),
+                    isRental: prop.isRental || prop.propertyType === 'RENTAL' || prop.source === 'rent-page',
+                    fromDatabase: false
+                }));
+
+            savedProperties = [...savedProperties, ...uniqueLocalProperties];
+
+            console.log('Dashboard: Total merged properties:', savedProperties.length);
+            console.log('Dashboard: Database properties:', savedProperties.filter(p => p.fromDatabase).length);
+            console.log('Dashboard: Local properties:', savedProperties.filter(p => !p.fromDatabase).length);
+            console.log('Dashboard: Rental properties found:', savedProperties.filter(p => p.isRental).length);
+
+            savedPropertiesCount.textContent = savedProperties.length;
+
+            savedPropertiesContainer.innerHTML = '';
+
+            if (savedProperties.length === 0) {
+                savedPropertiesContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-heart-broken"></i>
+                        <p>No saved properties found.</p>
+                        <p style="font-size: 14px; color: #666;">
+                            Checked database for user ID: ${userId}<br>
+                            Database connection: ${dbLoadSuccess ? '✅ Success' : '❌ Failed'}<br>
+                            Local storage: ${localProperties.length} properties
+                        </p>
+                        <div style="margin-top: 15px;">
+                            <a href="buy.html" class="btn-view" style="display: inline-block; margin-right: 10px;">
+                                Browse Properties for Sale
+                            </a>
+                            <a href="rent.html" class="btn-view" style="display: inline-block;">
+                                Browse Rental Properties
+                            </a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            savedProperties.forEach((property, index) => {
+                console.log(`Dashboard: Creating card for property ${index + 1}:`, property);
+                const propertyCard = createPropertyCard(property);
+                savedPropertiesContainer.appendChild(propertyCard);
+            });
+
+            console.log('Dashboard: Successfully displayed all saved properties');
+
+        } catch (error) {
+            console.error('Dashboard: Critical error loading saved properties:', error);
+
+            const savedProperties = JSON.parse(localStorage.getItem('savedProperties')) || [];
+            console.log('Dashboard: Fallback to localStorage only, found:', savedProperties.length);
+
+            savedPropertiesCount.textContent = savedProperties.length;
+            savedPropertiesContainer.innerHTML = '';
+
+            if (savedProperties.length === 0) {
+                savedPropertiesContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-heart-broken"></i>
+                        <p>No saved properties yet.</p>
+                        <p>Start exploring properties and save your favorites!</p>
+                        <div style="margin-top: 15px;">
+                            <a href="buy.html" class="btn-view" style="display: inline-block; margin-right: 10px;">
+                                Browse Properties for Sale
+                            </a>
+                            <a href="rent.html" class="btn-view" style="display: inline-block;">
+                                Browse Rental Properties
+                            </a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            savedProperties.forEach(property => {
+                property.isRental = property.isRental || property.propertyType === 'RENTAL' || property.source === 'rent-page';
+                property.propertyType = property.isRental ? 'RENTAL' : property.propertyType;
+                const propertyCard = createPropertyCard({...property, fromDatabase: false});
+                savedPropertiesContainer.appendChild(propertyCard);
+            });
+        }
+    }
+
+    function createPropertyCard(property) {
+        console.log('Creating property card for:', property);
+
+        const div = document.createElement('div');
+        div.className = 'saved-property-card';
+
+        let formattedPrice = property.price ? `$${property.price.toLocaleString()}` : 'Price on request';
+
+        const savedDate = property.savedDate ? new Date(property.savedDate).toLocaleDateString() : 'Recently';
+
+        const removeId = property.fromDatabase ? property.savedPropertyID : property.apartmentID;
+        const isFromDatabase = property.fromDatabase ? 'true' : 'false';
+
+        const isRental = property.propertyType === 'RENTAL' ||
+            property.isRental === true ||
+            (property.features && property.features.includes('(RENTAL)')) ||
+            (property.propertyType && property.propertyType.toUpperCase() === 'RENTAL') ||
+            property.source === 'rent-page';
+
+        const propertyBadge = isRental ? 'FOR RENT' : 'FOR SALE';
+        const priceDisplay = isRental ? `${formattedPrice}/mo` : formattedPrice;
+
+        const imageUrl = property.imageUrl ||
+            (property.type && generateImageUrl(property.type)) ||
+            generateImageUrl('Apartment');
+
+        div.innerHTML = `
+            <div class="property-image">
+                <div class="property-badge" style="${isRental ? 'background-color: #3498db;' : ''}">${propertyBadge}</div>
+                <img src="${imageUrl}" alt="Property Image" style="width:100%;height:100%;object-fit:cover;"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                <i class="fas fa-home fa-3x" style="display:none; color:#3498db; margin:auto;"></i>
+            </div>
+            <div class="property-content">
+                <div class="property-price">${priceDisplay}</div>
+                <div class="property-address">${property.location || 'Location unavailable'}</div>
+                <div class="property-features">
+                    <span><i class="fas fa-bed"></i> ${property.bedrooms || 0} beds</span>
+                    <span><i class="fas fa-bath"></i> ${property.bathrooms || 0} baths</span>
+                    <span><i class="fas fa-ruler-combined"></i> ${Math.floor((property.bedrooms || 1) * 750).toLocaleString()} sqft</span>
+                </div>
+                <div class="property-features">
+                    <span class="property-type-badge" style="${isRental ? 'background-color: #3498db; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;' : ''}">${property.type || 'Property'}${isRental ? ' (Rental)' : ''}</span>
+                    <span>Saved on: ${savedDate}</span>
+                </div>
+                <div class="property-actions">
+                    <button class="btn-view" onclick="viewProperty(${property.apartmentID}, ${isRental})">View Details</button>
+                    <button class="btn-remove" onclick="removeProperty(${removeId}, ${isFromDatabase})">Remove</button>
+                </div>
+            </div>
+        `;
+
+        return div;
+    }
+
+    function generateImageUrl(propertyType) {
+        const imageUrls = {
+            'Studio': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400',
+            'Apartment': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400',
+            'Condo': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400',
+            'House': 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400',
+            'Townhouse': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
+            'Villa': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400',
+            'Penthouse': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400',
+            'Mansion': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400',
+            'Ranch': 'https://images.unsplash.com/photo-1598228723793-52759bba239c?w=400'
+        };
+
+        return imageUrls[propertyType] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400';
+    }
+
+    function viewProperty(propertyId, isRental = false) {
+        logActivity('navigation', `Viewed ${isRental ? 'rental' : 'sale'} property details (ID: ${propertyId})`);
+
+        if (isRental) {
+            window.location.href = `rent.html?view=${propertyId}`;
+        } else {
+            window.location.href = `buy.html?view=${propertyId}`;
+        }
+    }
+
+    async function removeProperty(propertyId, isFromDatabase = false) {
+        try {
+            console.log('removeProperty called with:', { propertyId, isFromDatabase });
+
+            const actualPropertyId = parseInt(propertyId);
+            const fromDatabase = isFromDatabase === 'true' || isFromDatabase === true;
+
+            const removeButtons = document.querySelectorAll('.btn-remove');
+            const targetButton = Array.from(removeButtons).find(btn => {
+                const onclickAttr = btn.getAttribute('onclick');
+                return onclickAttr && onclickAttr.includes(propertyId.toString());
+            });
+
+            if (targetButton) {
+                targetButton.textContent = 'Removing...';
+                targetButton.disabled = true;
+            }
+
+            let removalSuccess = false;
+            let errorMessage = '';
+
+            const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const userId = sessionUser ? sessionUser.userID : 1;
+
+            if (fromDatabase) {
+                try {
+                    console.log('Attempting direct database removal with savedPropertyID:', actualPropertyId);
+
+                    const response = await fetch(`${API_BASE}/user/saved-properties/${actualPropertyId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
+                        }
+                    });
+
+                    console.log('DELETE API Response status:', response.status);
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log('Database deletion response:', result);
+
+                        if (result.success) {
+                            removalSuccess = true;
+                            logActivity('property', 'Removed saved property from database');
+                            console.log('Database removal successful');
+                        } else {
+                            errorMessage = result.message || 'Database reported deletion failure';
+                            console.warn('Database removal reported failure:', result.message);
+                        }
+                    } else {
+                        const errorText = await response.text();
+                        errorMessage = `HTTP ${response.status}: ${errorText}`;
+                        console.error('Database removal failed:', response.status, errorText);
+                    }
+                } catch (dbError) {
+                    errorMessage = `Database error: ${dbError.message}`;
+                    console.warn('Database removal error:', dbError.message);
+                }
+            }
+
+            if (!removalSuccess) {
+                try {
+                    console.log('Searching for property in database by apartmentID:', actualPropertyId);
+
+                    const listResponse = await fetch(`${API_BASE}/user/saved-properties/${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
+                        }
+                    });
+
+                    if (listResponse.ok) {
+                        const savedProperties = await listResponse.json();
+                        console.log('Found saved properties:', savedProperties.length);
+
+                        let foundProperty = null;
+                        for (const savedProp of savedProperties) {
+                            try {
+                                const propertyData = JSON.parse(savedProp.propertyData || '{}');
+                                if (propertyData.apartmentID === actualPropertyId) {
+                                    foundProperty = savedProp;
+                                    break;
+                                }
+                            } catch (parseError) {
+                                console.warn('Error parsing property data:', parseError);
+                            }
+                        }
+
+                        if (foundProperty) {
+                            console.log('Found property in database with savedPropertyID:', foundProperty.savedPropertyID);
+
+                            const deleteResponse = await fetch(`${API_BASE}/user/saved-properties/${foundProperty.savedPropertyID}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`
+                                }
+                            });
+
+                            if (deleteResponse.ok) {
+                                const result = await deleteResponse.json();
+                                if (result.success) {
+                                    removalSuccess = true;
+                                    console.log('Property successfully removed from database via search');
+                                    logActivity('property', 'Removed saved property from database via search');
+                                } else {
+                                    errorMessage = result.message || 'Database reported deletion failure';
+                                }
+                            } else {
+                                const errorText = await deleteResponse.text();
+                                errorMessage = `HTTP ${deleteResponse.status}: ${errorText}`;
+                            }
+                        } else {
+                            console.log('Property not found in database, proceeding with localStorage cleanup only');
+                            removalSuccess = true;
+                        }
+                    } else {
+                        console.warn('Failed to fetch user saved properties for search');
+                        removalSuccess = true;
+                    }
+                } catch (searchError) {
+                    console.warn('Error searching for property in database:', searchError.message);
+                    removalSuccess = true;
+                }
+            }
+
+            try {
+                let savedProperties = JSON.parse(localStorage.getItem('savedProperties')) || [];
+                const initialLength = savedProperties.length;
+
+                savedProperties = savedProperties.filter(property => {
+                    const propApartmentId = property.apartmentID || property.id;
+                    const propSavedId = property.savedPropertyID;
+
+                    return propApartmentId !== actualPropertyId &&
+                        propSavedId !== actualPropertyId &&
+                        propApartmentId !== propertyId &&
+                        propSavedId !== propertyId;
+                });
+
+                if (savedProperties.length < initialLength) {
+                    localStorage.setItem('savedProperties', JSON.stringify(savedProperties));
+                    logActivity('property', 'Removed saved property from local storage');
+                    console.log('Property removed from localStorage');
+                }
+            } catch (localError) {
+                console.warn('Error cleaning localStorage:', localError.message);
+            }
+
+            if (removalSuccess) {
+                showNotification('✅ Property removed successfully!');
+
+                if (targetButton) {
+                    const propertyCard = targetButton.closest('.saved-property-card');
+                    if (propertyCard) {
+                        propertyCard.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        propertyCard.style.opacity = '0';
+                        propertyCard.style.transform = 'scale(0.95)';
+
+                        setTimeout(() => {
+                            propertyCard.remove();
+
+                            const currentCount = parseInt(savedPropertiesCount.textContent) || 0;
+                            savedPropertiesCount.textContent = Math.max(0, currentCount - 1);
+
+                            const remainingCards = document.querySelectorAll('.saved-property-card');
+                            if (remainingCards.length === 0) {
+                                savedPropertiesContainer.innerHTML = `
+                                    <div class="empty-state" style="grid-column: 1 / -1;">
+                                        <i class="fas fa-heart-broken"></i>
+                                        <p>No saved properties yet.</p>
+                                        <p>Start exploring properties and save your favorites!</p>
+                                        <div style="margin-top: 15px;">
+                                            <a href="buy.html" class="btn-view" style="display: inline-block; margin-right: 10px;">
+                                                Browse Properties for Sale
+                                            </a>
+                                            <a href="rent.html" class="btn-view" style="display: inline-block;">
+                                                Browse Rental Properties
+                                            </a>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        }, 300);
+                    } else {
+                        console.log('Property card not found in DOM, reloading saved properties');
+                        setTimeout(() => {
+                            loadSavedProperties();
+                        }, 100);
+                    }
+                } else {
+                    console.log('Remove button not found, reloading saved properties');
+                    setTimeout(() => {
+                        loadSavedProperties();
+                    }, 100);
+                }
+            } else {
+                throw new Error(errorMessage || 'Failed to remove property from database');
+            }
+
+        } catch (error) {
+            console.error('Error removing property:', error);
+
+            const removeButtons = document.querySelectorAll('.btn-remove');
+            const targetButton = Array.from(removeButtons).find(btn => {
+                const onclickAttr = btn.getAttribute('onclick');
+                return onclickAttr && onclickAttr.includes(propertyId.toString());
+            });
+
+            if (targetButton) {
+                targetButton.textContent = 'Remove';
+                targetButton.disabled = false;
+            }
+
+            showNotification('❌ Failed to remove property: ' + error.message);
+        }
+    }
+
+    function logActivity(type, details) {
+        let activities = JSON.parse(localStorage.getItem('userActivities')) || [];
+
+        activities.unshift({
+            type: type,
+            details: details,
+            timestamp: new Date().toISOString()
+        });
+
+        if (activities.length > 20) {
+            activities = activities.slice(0, 20);
+        }
+
+        localStorage.setItem('userActivities', JSON.stringify(activities));
+
+        updateActivitiesDisplay(activities);
+    }
+
+    function updateActivitiesDisplay(activities) {
+        recentActivitiesCount.textContent = activities.length;
+
+        activitiesList.innerHTML = '';
+
+        const activitiesToShow = activities.slice(0, 5);
+
+        activitiesToShow.forEach(activity => {
+            const activityItem = document.createElement('div');
+            activityItem.className = 'activity-item';
+
+            const date = new Date(activity.timestamp);
+            const formattedDate = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`;
+
+            activityItem.innerHTML = `
+                <div class="activity-type">${activity.type}:</div>
+                <div class="activity-details">${activity.details}</div>
+                <div class="activity-time">${formattedDate}</div>
+            `;
+
+            activitiesList.appendChild(activityItem);
+        });
+    }
+
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-info-circle"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 10);
+
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            if (currentUser) {
+                logActivity('authentication', 'User logged out');
+            }
+            sessionStorage.removeItem('currentUser');
+            sessionStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('authToken');
+            window.location.href = 'index.html';
+        }
+    }
+
+    // Placeholder for showAuth if needed
+    function showAuth(type) {
+        // Implement if auth modal is fully added
+        console.log(`Show ${type} modal`);
+    }
+</script>
+</body>
+</html>
+

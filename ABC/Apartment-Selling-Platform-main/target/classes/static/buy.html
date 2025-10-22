@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Properties - PropertyHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            /* Light Mode Variables */
+            --bg-primary-light: #F9FAFB;
+            --bg-secondary-light: #FFFFFF;
+            --text-primary-light: #111827;
+            --text-secondary-light: #6B7280;
+            --primary-light: #4F46E5;
+            --secondary-light: #06B6D4;
+            --accent-light: #F59E0B;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-light: rgba(79, 70, 229, 0.1);
+            --success-light: #22C55E;
+            --error-light: #EF4444;
+
+            /* Dark Mode Variables */
+            --bg-primary-dark: #1F2937;
+            --bg-secondary-dark: #374151;
+            --text-primary-dark: #F3F4F6;
+            --text-secondary-dark: #D1D5DB;
+            --primary-dark: #818CF8;
+            --secondary-dark: #22D3EE;
+            --accent-dark: #FBBF24;
+            --shadow-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --border-dark: rgba(129, 140, 248, 0.2);
+            --success-dark: #4ADE80;
+            --error-dark: #F87171;
+
+            /* Default to Light Mode */
+            --bg-primary: var(--bg-primary-light);
+            --bg-secondary: var(--bg-secondary-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --accent: var(--accent-light);
+            --shadow: var(--shadow-light);
+            --border: var(--border-light);
+            --success: var(--success-light);
+            --error: var(--error-light);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: var(--bg-primary-dark);
+            --bg-secondary: var(--bg-secondary-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --accent: var(--accent-dark);
+            --shadow: var(--shadow-dark);
+            --border: var(--border-dark);
+            --success: var(--success-dark);
+            --error: var(--error-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--bg-secondary);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            margin-right: 12px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin: 0 20px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--primary);
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 16px;
+        }
+
+        .btn-login {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-right: 12px;
+        }
+
+        .btn-signup {
+            background-color: var(--primary);
+            color: var(--bg-secondary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-login:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            transform: translateY(-2px);
+        }
+
+        .btn-signup:hover {
+            background-color: var(--primary-dark, #4338CA);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            transform: scale(1.1);
+        }
+
+        /* Navigation Right Section */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+
+        /* User Dropdown Styles */
+        .user-dropdown {
+            position: relative;
+            display: none;
+        }
+
+        .user-trigger {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+
+        .user-trigger:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-name {
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .dropdown-arrow {
+            color: var(--primary);
+            font-size: 14px;
+            transition: transform 0.3s;
+        }
+
+        .user-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            min-width: 280px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            margin-top: 8px;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-avatar-large {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name-large {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 18px;
+        }
+
+        .user-email {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0 12px;
+        }
+
+        .dropdown-menu-items {
+            padding: 12px 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        .dropdown-menu-items a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 24px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .dropdown-menu-items a:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            color: var(--primary);
+        }
+
+        .dropdown-menu-items i {
+            width: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .dropdown-menu-items a:hover i {
+            color: var(--primary);
+        }
+
+        .dropdown-footer {
+            padding: 12px 24px 24px;
+        }
+
+        .btn-logout-dropdown {
+            width: 100%;
+            padding: 12px;
+            background: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            color: var(--error);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-logout-dropdown:hover {
+            background: rgba(var(--error-rgb, 239, 68, 68), 0.05);
+            border-color: var(--error);
+        }
+
+        /* Global Styles (from buy.css, adapted to variables) */
+        .search-container {
+            background: var(--bg-secondary);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .search-panel {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-row {
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .search-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .search-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .search-input {
+            position: relative;
+        }
+
+        .search-input input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            padding-right: 40px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--bg-secondary);
+            font-size: 16px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .select-wrapper:after {
+            content: '\f107';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: var(--primary);
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .price-range-container {
+            padding: 5px 0;
+            position: relative;
+        }
+
+        .slider-track {
+            width: 100%;
+            height: 5px;
+            background: var(--border);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 5px;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: transparent;
+            outline: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--bg-secondary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .price-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: var(--text-secondary);
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .amenities-group {
+            width: 100%;
+        }
+
+        .amenities-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 20px;
+            user-select: none;
+        }
+
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            position: relative;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+
+        .checkbox-container:hover input ~ .checkmark {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .checkbox-container input:checked ~ .checkmark:after {
+            display: block;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid var(--bg-secondary);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .sort-and-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 20px;
+        }
+
+        .sort-group {
+            max-width: 300px;
+            flex: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .reset-btn {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .reset-btn:hover {
+            background: rgba(var(--primary-rgb, 79, 70, 229), 0.2);
+        }
+
+        .search-btn {
+            background: var(--success);
+            color: var(--bg-secondary);
+        }
+
+        .search-btn:hover {
+            background: var(--success-dark, #1D4ED8);
+        }
+
+        /* Properties Section Styles */
+        .properties-section {
+            padding: 30px 0 60px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .property-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-dark, 0 5px 15px rgba(0,0,0,0.1));
+        }
+
+        .property-image {
+            height: 200px;
+            background: var(--border);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .property-image i {
+            font-size: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary);
+            color: var(--bg-secondary);
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 4px;
+        }
+
+        .property-content {
+            padding: 20px;
+        }
+
+        .property-header {
+            margin-bottom: 15px;
+        }
+
+        .property-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .property-mortgage {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .property-address {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-top: 5px;
+        }
+
+        .property-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .property-features span {
+            display: flex;
+            align-items: center;
+        }
+
+        .property-features i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        .property-type-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .property-type-badge {
+            background: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .property-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .property-description {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-purchase {
+            background: linear-gradient(135deg, var(--error) 0%, #DC2626 100%);
+            color: var(--bg-secondary);
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            transition: var(--transition);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-purchase:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-purchase:hover {
+            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-purchase:hover:before {
+            left: 100%;
+        }
+
+        .btn-purchase:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-save {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-save:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn-save:hover {
+            color: var(--bg-secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-save:hover:before {
+            left: 0;
+        }
+
+        .btn-save:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-save.saved {
+            background: var(--success);
+            color: var(--bg-secondary);
+            border-color: var(--success);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-save.saved:hover {
+            background: var(--success-dark, #16A34A);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        /* Enhanced Pay Now Button Styles */
+        .pay-now-btn {
+            background: linear-gradient(135deg, var(--success) 0%, #16A34A 100%);
+            color: white !important;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .pay-now-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .pay-now-btn:hover {
+            background: linear-gradient(135deg, #16A34A 0%, #15803D 100%) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        .pay-now-btn:hover:before {
+            left: 100%;
+        }
+
+        .pay-now-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .pay-now-btn i {
+            font-size: 20px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-secondary);
+            padding: 15px 25px;
+            border-radius: 4px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: var(--success);
+        }
+
+        .toast-message {
+            font-weight: 500;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .search-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-group {
+                width: 100%;
+            }
+
+            .sort-and-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .sort-group {
+                max-width: 100%;
+            }
+
+            .action-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Additional styles for success modal */
+        .success-message {
+            text-align: center;
+        }
+
+        .success-message i {
+            font-size: 48px;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+    </style>
+    <script src="profile-avatar.js"></script>
+</head>
+<body>
+<!-- Header (adapted from index.html) -->
+<header>
+    <div class="container">
+        <div class="header-top">
+            <a href="index.html" class="logo">
+                <i class="fas fa-home"></i>
+                PropertyHub
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="buy.html" class="active">Buy</a></li>
+                <li><a href="Rent.html" onclick="checkAuth('rent')">Rent</a></li>
+                <li><a href="apartment.html" onclick="checkAuth('sell')">Sell</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+                <li><a href="dashboard.html" onclick="checkAuth('dashboard')">Dashboard</a></li>
+            </ul>
+
+            <div class="nav-right">
+
+                <div class="user-dropdown" id="userDropdown">
+                <div class="user-trigger" onclick="toggleUserMenu()">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span class="user-name" id="user-name">User</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </div>
+
+                <div class="user-dropdown-menu" id="user-menu">
+                    <div class="dropdown-header">
+                        <div class="user-avatar-large" id="user-avatar-large">U</div>
+                        <div class="user-details">
+                            <span class="user-name-large" id="user-name-large">User</span>
+                            <span class="user-email" id="user-email">user@email.com</span>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <ul class="dropdown-menu-items">
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+                        <li><a href="dashboard.html" onclick="checkAuth('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="apartment.html" onclick="checkAuth('sell')"><i class="fas fa-home"></i> Sell</a></li>
+                    </ul>
+                    <div class="dropdown-footer">
+                        <button class="btn-logout-dropdown" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="theme-toggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Search Filters -->
+<section class="search-container">
+    <div class="container">
+        <div class="search-panel">
+            <div class="search-row">
+                <div class="search-group">
+                    <label>Location</label>
+                    <div class="search-input">
+                        <input type="text" id="location" placeholder="Enter city, neighborhood, or address">
+                        <i class="fas fa-search search-icon" onclick="applyFilters({searchIconClicked: true})"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-row">
+                <div class="search-group half">
+                    <label>Category</label>
+                    <div class="select-wrapper">
+                        <select id="category">
+                            <option value="">All Categories</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Condo">Condo</option>
+                            <option value="House">House</option>
+                            <option value="Townhouse">Townhouse</option>
+                            <option value="Villa">Villa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="search-group half">
+                    <label>Price Range</label>
+                    <div class="price-range-container">
+                        <div class="slider-track"></div>
+                        <input type="range" min="0" max="3000" value="0" step="50" class="slider" id="price-min">
+                        <input type="range" min="0" max="3000" value="3000" step="50" class="slider" id="price-max">
+                        <div class="price-values">
+                            <span id="price-min-value">$0</span>
+                            <span class="price-separator">-</span>
+                            <span id="price-max-value">$3000+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-row">
+                <div class="search-group third">
+                    <label>Bedrooms</label>
+                    <div class="select-wrapper">
+                        <select id="bedrooms">
+                            <option value="">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="search-group third">
+                    <label>Bathrooms</label>
+                    <div class="select-wrapper">
+                        <select id="bathrooms">
+                            <option value="">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="search-group third">
+                    <label>Move-in Date</label>
+                    <input type="date" id="move-in-date" placeholder="yyyy-mm-dd">
+                </div>
+            </div>
+
+            <div class="search-row">
+                <div class="amenities-group">
+                    <label>Amenities</label>
+                    <div class="amenities-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="pool">
+                            <span class="checkmark"></span>
+                            Pool
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="gym">
+                            <span class="checkmark"></span>
+                            Gym
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="parking">
+                            <span class="checkmark"></span>
+                            Parking
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="pets-allowed">
+                            <span class="checkmark"></span>
+                            Pets Allowed
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="furnished">
+                            <span class="checkmark"></span>
+                            Furnished
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-row sort-and-actions">
+                <div class="sort-group">
+                    <label>Sort By</label>
+                    <div class="select-wrapper">
+                        <select id="sort-by">
+                            <option value="price-low">Price (Low to High)</option>
+                            <option value="price-high">Price (High to Low)</option>
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="reset-btn" class="btn reset-btn" onclick="resetFilters()">Reset</button>
+                    <button id="search-btn" class="btn search-btn" onclick="applyFilters()">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Properties Section -->
+<section class="properties-section">
+    <div class="container">
+        <h2 class="section-title">Available Properties for Sale</h2>
+        <div id="properties-container" class="properties-grid">
+            <!-- Properties will be dynamically loaded here -->
+        </div>
+    </div>
+</section>
+
+<!-- Purchase Modal -->
+<div id="purchase-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('purchase-modal')">&times;</span>
+        <h2>Make an Offer</h2>
+        <form id="purchase-form">
+            <div class="form-group">
+                <label for="purchase-name">Full Name</label>
+                <input type="text" id="purchase-name" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-email">Email</label>
+                <input type="email" id="purchase-email" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-phone">Phone</label>
+                <input type="tel" id="purchase-phone" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase-offer">Offer Amount ($)</label>
+                <input type="number" id="purchase-offer" required min="1000">
+            </div>
+            <div class="form-group">
+                <div class="offer-calculation">
+                    <span>Your Offer:</span>
+                    <span class="offer-value">$<span id="offer-amount">0</span></span>
+                </div>
+                <div class="offer-calculation">
+                    <span>Difference from Asking:</span>
+                    <span class="offer-value" id="difference-amount">$0</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="payment-type">Payment Method</label>
+                <select id="purchase-type" required>
+                    <option value="">Select payment method</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Mortgage">Mortgage</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                </select>
+            </div>
+            <div id="card-details">
+                <div class="form-group">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX">
+                </div>
+                <div class="form-group">
+                    <label for="name-on-card">Name on Card</label>
+                    <input type="text" id="name-on-card">
+                </div>
+            </div>
+            <button type="submit" class="btn-primary pay-now-btn">
+                <i class="fas fa-credit-card"></i>
+                Pay Now
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="success-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('success-modal')">&times;</span>
+        <div class="success-message">
+            <i class="fas fa-check-circle"></i>
+            <h2>Purchase Successful!</h2>
+            <p>Your payment has been processed and your purchase is confirmed.</p>
+            <p>Purchase ID: <span id="purchase-id"></span></p>
+            <p>You will receive a confirmation email shortly.</p>
+            <button class="btn-primary" onclick="closeModal('success-modal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts (combined from index.js and buy.js, adapted) -->
+<script>
+    // Theme Management (from index.html)
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeToggleIcon(savedTheme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeToggleIcon(newTheme);
+    }
+
+    function updateThemeToggleIcon(theme) {
+        const icon = document.querySelector('#theme-toggle i');
+        if (icon) {
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+    }
+
+    // User Dropdown Toggle (from index.html)
+    function toggleUserMenu() {
+        const dropdown = document.getElementById('userDropdown');
+        const menu = document.getElementById('user-menu');
+        if (dropdown && menu) {
+            menu.classList.toggle('show');
+            dropdown.classList.toggle('active');
+        }
+    }
+
+    // Update user dropdown with current user info
+    function updateUserDropdown(user) {
+        document.getElementById('userDropdown').style.display = 'inline-block';
+        document.getElementById('user-name').textContent = user.name;
+        document.getElementById('user-name-large').textContent = user.name;
+        document.getElementById('user-email').textContent = user.email;
+
+        // Update avatars with profile pictures
+        updateUserAvatars(user);
+        currentUser = user;
+    }
+
+    function updateUserAvatars(user) {
+        const savedPicture = getUserProfilePicture(user.userID);
+        const userAvatar = document.getElementById('user-avatar');
+        const userAvatarLarge = document.getElementById('user-avatar-large');
+
+        if (savedPicture) {
+            // Replace with image elements
+            userAvatar.innerHTML = `<img src="${savedPicture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">`;
+            userAvatarLarge.innerHTML = `<img src="${savedPicture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">`;
+        } else {
+            // Show initials
+            const initials = getUserInitials(user.name);
+            userAvatar.textContent = initials;
+            userAvatarLarge.textContent = initials;
+        }
+    }
+
+    function resetUserDropdown() {
+        document.getElementById('userDropdown').style.display = 'none';
+        currentUser = null;
+    }
+
+    // Authentication check for navigation
+    function checkAuth(page) {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
+        if (currentUser) {
+            // User is authenticated, redirect to the page
+            switch(page) {
+                case 'rent':
+                    window.location.href = 'Rent.html';
+                    break;
+                case 'sell':
+                    window.location.href = 'apartment.html';
+                    break;
+                case 'dashboard':
+                    window.location.href = 'dashboard.html';
+                    break;
+            }
+        } else {
+            // User not authenticated, redirect to login page
+            window.location.href = 'index.html';
+        }
+    }
+
+    // Buy Page Specific Code (full buy.js integrated)
+    const API_BASE = 'http://localhost:8080/api';
+    const PURCHASES_API = API_BASE + '/purchases';
+
+    // Current property for purchase
+    let currentProperty = null;
+    let currentPropertyPrice = 0;
+    let currentUserID = null; // This should come from login session
+
+    // Cached properties to avoid re-fetching on every slider drag
+    let cachedProperties = [];
+    let propertiesFetched = false;
+    let purchasedIds = new Set();
+
+    // Load properties when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set current user ID from session (fallback to null)
+        try {
+            const sUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (sUser) {
+                currentUserID = sUser.userID;
+                updateUserDropdown(sUser);
+            } else {
+                currentUserID = null;
+                resetUserDropdown();
+            }
+        } catch(e) {
+            currentUserID = null;
+            resetUserDropdown();
+        }
+
+        loadProperties();
+        setupEventListeners();
+        initializePriceSlider();
+
+        // Create a debounced version of applyFilters for slider input
+        window.debouncedApplyFilters = debounce(() => applyFilters({silent: true}), 300);
+    });
+
+    // Add event listener to refresh saved properties when page becomes visible
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && propertiesFetched) {
+            // Page became visible again, refresh the display to sync saved states
+            console.log('Page became visible, refreshing saved property states...');
+            displayProperties(cachedProperties);
+        }
+    });
+
+    // Add event listener to refresh when user navigates back to the page
+    window.addEventListener('focus', function() {
+        if (propertiesFetched) {
+            // Page gained focus, refresh the display to sync saved states
+            console.log('Page gained focus, refreshing saved property states...');
+            displayProperties(cachedProperties);
+        }
+    });
+
+    // Debounce function to prevent excessive filter calls
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(context, args);
+            }, wait);
+        };
+    }
+
+    // Set up event listeners for form interactions
+    function setupEventListeners() {
+        // Purchase form - update price when offer changes
+        document.getElementById('purchase-offer').addEventListener('input', updatePriceCalculation);
+
+        // Purchase form submission
+        document.getElementById('purchase-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            processPurchase();
+        });
+
+        // Set minimum date for move-in to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('move-in-date').setAttribute('min', today);
+    }
+
+    // Alias to avoid undefined reference (was updatePriceCalculation in listener)
+    function updatePriceCalculation() { if (typeof updateOfferCalculation === 'function') { updateOfferCalculation(); } }
+
+    // Initialize price range slider
+    function initializePriceSlider() {
+        const minSlider = document.getElementById('price-min');
+        const maxSlider = document.getElementById('price-max');
+        const minValue = document.getElementById('price-min-value');
+        const maxValue = document.getElementById('price-max-value');
+        const sliderTrack = document.querySelector('.slider-track');
+
+        function updateSlider() {
+            const min = parseInt(minSlider.value);
+            const max = parseInt(maxSlider.value);
+            if (min > max) {
+                minSlider.value = max;
+                return updateSlider();
+            }
+            minValue.textContent = formatPriceDisplay(min);
+            maxValue.textContent = max >= 3000 ? '$3000+' : formatPriceDisplay(max);
+            const percent1 = ((min - minSlider.min) / (minSlider.max - minSlider.min)) * 100;
+            const percent2 = ((max - minSlider.min) / (maxSlider.max - minSlider.min)) * 100;
+            if (sliderTrack) {
+                sliderTrack.style.background = `linear-gradient(to right, #e0e0e0 ${percent1}%, #4CAF50 ${percent1}%, #4CAF50 ${percent2}%, #e0e0e0 ${percent2}%)`;
+            }
+            // Trigger debounced silent filtering when user adjusts sliders (guard if not yet defined)
+            if (typeof debouncedApplyFilters === 'function') {
+                debouncedApplyFilters();
+            }
+        }
+
+        // Format price for display
+        function formatPriceDisplay(price) {
+            if (price >= 1000) {
+                return '$' + (price / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+            } else {
+                return '$' + price;
+            }
+        }
+
+        // Avoid attaching duplicate listeners if re-initialized (e.g., after reset)
+        if (!minSlider.dataset.filterListenerAttached) {
+            minSlider.addEventListener('input', updateSlider);
+            minSlider.addEventListener('change', () => { updateSlider(); applyFilters(); });
+            minSlider.dataset.filterListenerAttached = 'true';
+        }
+        if (!maxSlider.dataset.filterListenerAttached) {
+            maxSlider.addEventListener('input', updateSlider);
+            maxSlider.addEventListener('change', () => { updateSlider(); applyFilters(); });
+            maxSlider.dataset.filterListenerAttached = 'true';
+        }
+
+        // Initial paint
+        updateSlider();
+    }
+
+    // Normalize property objects from different backend entity variants (Apartment, Apartment1, etc.)
+    function normalizeProperty(raw) {
+        if (!raw || typeof raw !== 'object') return null;
+
+        // Handle price normalization to ensure numeric values (BigDecimal or String conversion)
+        let price = 0;
+        if (raw.price !== undefined) {
+            price = typeof raw.price === 'number' ? raw.price : parseFloat(raw.price);
+        } else if (raw.aptPrice !== undefined) {
+            // Handle aptPrice which may be BigDecimal serialized as object or string
+            if (typeof raw.aptPrice === 'object' && raw.aptPrice !== null) {
+                price = parseFloat(raw.aptPrice.toString ? raw.aptPrice.toString() : 0);
+            } else {
+                price = parseFloat(raw.aptPrice || 0);
+            }
+        }
+
+        // Debug logging for price conversion
+        if (raw.aptPrice && price === 0) {
+            console.warn('Price conversion issue:', raw.aptId || 'unknown', 'Raw price:', raw.aptPrice);
+        }
+
+        // Detect Apartment1 style (aptPrice, aptBedrooms, aptId, etc.)
+        if ('aptPrice' in raw || 'aptBedrooms' in raw || 'aptId' in raw) {
+            return {
+                apartmentID: raw.apartmentID || raw.aptId || raw.id || 0,
+                type: raw.type || raw.aptType || 'Apartment',
+                price: price,
+                bedrooms: raw.bedrooms != null ? raw.bedrooms : raw.aptBedrooms != null ? raw.aptBedrooms : 0,
+                bathrooms: raw.bathrooms != null ? raw.bathrooms : raw.aptBathrooms != null ? raw.aptBathrooms : 1,
+                location: raw.location || raw.aptLocation || 'Unknown',
+                description: raw.description || raw.aptDescription || '',
+                status: raw.status || raw.aptStatus || 'AVAILABLE',
+                createdAt: raw.createdAt || raw.aptCreatedAt || new Date().toISOString(),
+                amenities: raw.amenities || null
+            };
+        }
+
+        // Already normalized (Apartment API)
+        return {
+            apartmentID: raw.apartmentID || raw.id || 0,
+            type: raw.type || 'Apartment',
+            price: price,
+            bedrooms: raw.bedrooms || 0,
+            bathrooms: raw.bathrooms || 1,
+            location: raw.location || 'Unknown',
+            description: raw.description || '',
+            status: raw.status || 'AVAILABLE',
+            createdAt: raw.createdAt || new Date().toISOString(),
+            amenities: raw.amenities || null
+        };
+    }
+
+    async function loadPurchasedIds(){
+        purchasedIds = new Set();
+        try {
+            if (!currentUserID) return;
+            const res = await fetch(`${API_BASE}/user/saved-properties/${currentUserID}`);
+            if (!res.ok) return;
+            const arr = await res.json();
+            arr.forEach(sp => {
+                try {
+                    const data = sp.propertyData ? JSON.parse(sp.propertyData) : {};
+                    if (data && (data.purchased === true || (sp.propertyFeatures && sp.propertyFeatures.includes('PURCHASED')))) {
+                        if (data.apartmentID) purchasedIds.add(Number(data.apartmentID));
+                    }
+                } catch(_) {}
+            });
+        } catch(e) { /* ignore */ }
+    }
+
+    function normalizeList(list) {
+        if (!Array.isArray(list)) return [];
+        return list.map(normalizeProperty).filter(Boolean);
+    }
+
+    // Load properties from API
+    async function loadProperties() {
+        // Load purchased IDs for current user (so we can hide purchased items)
+        await loadPurchasedIds();
+        const container = document.getElementById('properties-container');
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #7f8c8d;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading properties...</p></div>';
+
+        try {
+            // Create an array of sample rental properties that always appear
+            const sampleRentalProperties = [
+                {
+                    apartmentID: 4001,
+                    type: "Studio",
+                    price: 228000, // Will display as $950/mo
+                    bedrooms: 0,
+                    bathrooms: 1,
+                    squareFeet: 0,
+                    location: "Downtown Studios, San Francisco",
+                    description: "Cozy studio apartment in trendy neighborhood. Walking distance to cafes, shops and public transport.",
+                    amenities: { pool: false, gym: true, parking: true, petsAllowed: false, furnished: false }
+                },
+                {
+                    apartmentID: 4002,
+                    type: "Apartment",
+                    price: 288000, // Will display as $1200/mo
+                    bedrooms: 1,
+                    bathrooms: 1,
+                    squareFeet: 750,
+                    location: "City Center Lofts, New York",
+                    description: "Modern studio apartment in the heart of downtown. Floor-to-ceiling windows, stainless steel appliances, and 24-hour security.",
+                    amenities: { pool: false, gym: true, parking: true, petsAllowed: false, furnished: false }
+                },
+                {
+                    apartmentID: 4003,
+                    type: "Apartment",
+                    price: 336000, // Will display as $1400/mo
+                    bedrooms: 2,
+                    bathrooms: 1,
+                    squareFeet: 1500,
+                    location: "Harbor View, Seattle",
+                    description: "Waterfront apartment with stunning views of the harbor. Recently renovated with modern finishes.",
+                    amenities: { pool: false, gym: true, parking: true, petsAllowed: true, furnished: false }
+                },
+                {
+                    apartmentID: 4004,
+                    type: "Condo",
+                    price: 384000, // Will display as $1600/mo
+                    bedrooms: 2,
+                    bathrooms: 2,
+                    squareFeet: 1200,
+                    location: "Lakeside Condos, Chicago",
+                    description: "Beautiful condo with lake views, modern kitchen, and in-unit laundry.",
+                    amenities: { pool: true, gym: true, parking: true, petsAllowed: true, furnished: false }
+                },
+                {
+                    apartmentID: 4005,
+                    type: "Apartment",
+                    price: 420000, // Will display as $1750/mo
+                    bedrooms: 3,
+                    bathrooms: 2,
+                    squareFeet: 1800,
+                    location: "Sunset Heights, Miami",
+                    description: "Spacious apartment with balcony, pool access, and nearby shopping.",
+                    amenities: { pool: true, gym: false, parking: true, petsAllowed: true, furnished: false }
+                }
+            ];
+
+            // Store these properties as cached properties so they persist
+            cachedProperties = sampleRentalProperties;
+            propertiesFetched = true;
+
+            // Try to load from API but don't depend on it
+            try {
+                const response = await fetch(API_BASE + '/apartments');
+                if (response.ok) {
+                    const apiRaw = await response.json();
+                    const apiProperties = normalizeList(apiRaw);
+                    // Combine API properties with sample properties
+                    cachedProperties = [...apiProperties, ...sampleRentalProperties];
+                }
+            } catch (apiError) {
+                console.warn('API fetch error:', apiError);
+                // Continue with sample properties only
+            }
+
+            // Always display the cached properties (excluding purchased ones for this user)
+            const visible = Array.isArray(cachedProperties) ? cachedProperties.filter(p=>!purchasedIds.has(Number(p.apartmentID))) : [];
+            displayProperties(visible);
+
+        } catch (error) {
+            console.error('Critical error in loadProperties:', error);
+            // Show a meaningful error but still try to display sample properties
+            const fallbackProperties = [
+                {
+                    apartmentID: 4001,
+                    type: "Studio",
+                    price: 228000,
+                    bedrooms: 0,
+                    bathrooms: 1,
+                    squareFeet: 0,
+                    location: "Downtown Studios, San Francisco",
+                    description: "Cozy studio apartment in trendy neighborhood.",
+                    amenities: { pool: false, gym: true, parking: true, petsAllowed: false, furnished: false }
+                }
+            ];
+            cachedProperties = fallbackProperties;
+            displayProperties(fallbackProperties);
+        }
+    }
+
+    // Display properties in the grid
+    async function displayProperties(properties) {
+        const container = document.getElementById('properties-container');
+
+        if (properties.length === 0) {
+            container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #7f8c8d; grid-column: 1 / -1;">
+                <i class="fas fa-home fa-3x" style="margin-bottom: 15px;"></i>
+                <h3>No Properties Available</h3>
+                <p>Check back later for new property listings.</p>
+            </div>
+        `;
+            return;
+        }
+
+        // Get current saved properties to check state
+        let savedPropertyIds = new Set();
+
+        try {
+            // Get current user from session storage
+            const sessionUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (sessionUser && sessionUser.userID) {
+                const savedResponse = await fetch(`${API_BASE}/user/saved-properties/${sessionUser.userID}`);
+                if (savedResponse.ok) {
+                    const savedProperties = await savedResponse.json();
+                    savedPropertyIds = new Set(savedProperties.map(sp => Number(sp.apartmentID)));
+                }
+            }
+        } catch (error) {
+            console.warn('Failed to load saved properties:', error);
+        }
+
+        container.innerHTML = properties.map(property => {
+            const isSaved = savedPropertyIds.has(Number(property.apartmentID));
+            const imageUrl = generateImageUrl(property.type, property.apartmentID);
+            const price = property.price || 0;
+            const formattedPrice = price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            const createdDate = new Date(property.createdAt);
+            const timeAgo = Math.floor((new Date() - createdDate) / (1000 * 60 * 60 * 24)) + ' days ago';
+
+            return `
+            <div class="property-card">
+                <div class="property-image">
+                    <img src="${imageUrl}" alt="${property.type}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <span class="property-badge">For Sale</span>
+                </div>
+                <div class="property-content">
+                    <div class="property-header">
+                        <div class="property-price">${formattedPrice}</div>
+                    </div>
+                    <div class="property-address">${property.location}</div>
+                    <div class="property-features">
+                        <span><i class="fas fa-bed"></i> ${property.bedrooms} Beds</span>
+                        <span><i class="fas fa-bath"></i> ${property.bathrooms} Baths</span>
+                    </div>
+                    <div class="property-type-info">
+                        <span class="property-type-badge">${property.type}</span>
+                        <span class="property-date">${timeAgo}</span>
+                    </div>
+                    <p class="property-description">${property.description}</p>
+                    <div class="property-actions">
+                        <button id="purchase-btn-${property.apartmentID}" class="btn-purchase" onclick="openPurchaseModal(${property.apartmentID}, ${price})">Purchase</button>
+                        <button class="btn-save" onclick="${isSaved ? 'unsaveProperty' : 'saveProperty'}(${property.apartmentID})">${isSaved ? 'Saved ★' : 'Save ♥'}</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        }).join('');
+    }
+
+    function applyFilters(options = {}) {
+        const { silent = false, searchIconClicked = false } = options;
+
+        const filters = {
+            location: document.getElementById('location').value.toLowerCase(),
+            category: document.getElementById('category').value.toLowerCase(),
+            minPrice: parseInt(document.getElementById('price-min').value) * 1000,
+            maxPrice: parseInt(document.getElementById('price-max').value) * 1000,
+            bedrooms: document.getElementById('bedrooms').value,
+            bathrooms: document.getElementById('bathrooms').value,
+            moveInDate: document.getElementById('move-in-date').value,
+            amenities: {
+                pool: document.getElementById('pool').checked,
+                gym: document.getElementById('gym').checked,
+                parking: document.getElementById('parking').checked,
+                petsAllowed: document.getElementById('pets-allowed').checked,
+                furnished: document.getElementById('furnished').checked
+            },
+            sortBy: document.getElementById('sort-by').value
+        };
+
+        let filtered = cachedProperties.filter(property => {
+            if (filters.location && !property.location.toLowerCase().includes(filters.location)) return false;
+            if (filters.category && property.type.toLowerCase() !== filters.category) return false;
+            if (property.price < filters.minPrice || (filters.maxPrice < 3000000 && property.price > filters.maxPrice)) return false;
+            if (filters.bedrooms && parseInt(property.bedrooms) < parseInt(filters.bedrooms)) return false;
+            if (filters.bathrooms && parseInt(property.bathrooms) < parseInt(filters.bathrooms)) return false;
+            if (filters.moveInDate && new Date(property.availableDate || property.createdAt) < new Date(filters.moveInDate)) return false;
+
+            for (let amenity in filters.amenities) {
+                if (filters.amenities[amenity] && !property.amenities?.[amenity]) return false;
+            }
+
+            return true;
+        });
+
+        // Sort
+        filtered.sort((a, b) => {
+            switch (filters.sortBy) {
+                case 'price-low': return a.price - b.price;
+                case 'price-high': return b.price - a.price;
+                case 'newest': return new Date(b.createdAt) - new Date(a.createdAt);
+                case 'oldest': return new Date(a.createdAt) - new Date(b.createdAt);
+                default: return 0;
+            }
+        });
+
+        displayProperties(filtered.filter(p => !purchasedIds.has(Number(p.apartmentID))));
+
+        if (!silent) {
+            showNotification('Filters applied successfully.');
+        }
+    }
+
+    // Reset all filters
+    function resetFilters() {
+        // Reset text/select inputs
+        document.getElementById('location').value = '';
+        document.getElementById('category').value = '';
+        document.getElementById('bedrooms').value = '';
+        document.getElementById('bathrooms').value = '';
+        document.getElementById('move-in-date').value = '';
+        document.getElementById('sort-by').value = 'price-low';
+
+        // Reset price slider (use defined min/max attributes rather than hardcoded 0)
+        const minSliderEl = document.getElementById('price-min');
+        const maxSliderEl = document.getElementById('price-max');
+        if (minSliderEl && maxSliderEl) {
+            minSliderEl.value = minSliderEl.min || 50000;
+            maxSliderEl.value = maxSliderEl.max || 3000000;
+        }
+        initializePriceSlider();
+
+        // Reset checkboxes
+        document.getElementById('pool').checked = false;
+        document.getElementById('gym').checked = false;
+        document.getElementById('parking').checked = false;
+        document.getElementById('pets-allowed').checked = false;
+        document.getElementById('furnished').checked = false;
+
+        // Reload properties
+        loadProperties();
+
+        // Show reset notification
+        showNotification('All filters have been reset.');
+    }
+
+    // Show a notification message
+    function showNotification(message) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-info-circle"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+        // Add to document
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+
+        // Remove after delay
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Open purchase modal
+    function openPurchaseModal(propertyId, propertyPrice) {
+        currentProperty = propertyId;
+        currentPropertyPrice = propertyPrice;
+
+        // Reset form
+        document.getElementById('purchase-form').reset();
+
+        // Set fixed property price to $450,000 as shown in the UI
+        const fixedPrice = 450000;
+
+        // Set up event listener for offer input to update calculation in real-time
+        const offerInput = document.getElementById('purchase-offer');
+        offerInput.addEventListener('input', updateOfferCalculation);
+
+        // Initialize offer calculation
+        document.getElementById('offer-amount').textContent = '0';
+        document.getElementById('difference-amount').textContent = '-450,000';
+        document.getElementById('difference-amount').style.color = 'red';
+
+        // Display the modal
+        document.getElementById('purchase-modal').style.display = 'flex';
+    }
+
+    // Update offer calculation in purchase modal
+    function updateOfferCalculation() {
+        const offerInput = document.getElementById('purchase-offer');
+        const offer = parseInt(offerInput.value) || 0;
+        const fixedPrice = 450000; // Fixed property price as shown in UI
+        const difference = offer - fixedPrice;
+
+        // Update offer amount
+        document.getElementById('offer-amount').textContent = offer.toLocaleString();
+
+        // Update difference with proper formatting and color
+        const differenceElement = document.getElementById('difference-amount');
+        differenceElement.textContent = difference.toLocaleString();
+
+        // Set color based on difference
+        if (difference > 0) {
+            differenceElement.style.color = '#27ae60'; // Green for above asking
+        } else if (difference < 0) {
+            differenceElement.style.color = '#e74c3c'; // Red for below asking
+        } else {
+            differenceElement.style.color = '#2c3e50'; // Default color for exact match
+        }
+    }
+
+    // Close modal
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Save property function
+    async function saveProperty(apartmentID) {
+        if (!currentUserID) {
+            alert('Please log in to save properties.');
+            return;
+        }
+
+        try {
+            // Find the property in cached properties
+            const property = cachedProperties.find(p => Number(p.apartmentID) === Number(apartmentID));
+            if (!property) {
+                console.error('Property not found:', apartmentID);
+                showNotification('Property not found.');
+                return;
+            }
+
+            // Prepare the data to save
+            const saveData = {
+                userID: currentUserID,
+                propertyPrice: property.price.toString(),
+                propertyAddress: property.location,
+                propertyFeatures: `${property.bedrooms} bed, ${property.bathrooms} bath`,
+                propertyData: {
+                    apartmentID: property.apartmentID,
+                    title: property.title,
+                    type: property.type,
+                    bedrooms: property.bedrooms,
+                    bathrooms: property.bathrooms,
+                    sqft: property.sqft,
+                    amenities: property.amenities,
+                    imageUrl: property.imageUrl,
+                    createdAt: property.createdAt
+                }
+            };
+
+            const response = await fetch(`${API_BASE}/saved-properties`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(saveData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification('Property saved successfully!');
+                // Refresh the properties display to update button states
+                loadProperties();
+            } else {
+                showNotification(result.message || 'Failed to save property.');
+            }
+
+        } catch (error) {
+            console.error('Error saving property:', error);
+            showNotification('Failed to save property. Please try again.');
+        }
+    }
+
+    // Unsave property function
+    async function unsaveProperty(apartmentID) {
+        if (!currentUserID) {
+            alert('Please log in to manage saved properties.');
+            return;
+        }
+
+        try {
+            // Find the saved property ID by getting user's saved properties
+            const response = await fetch(`${API_BASE}/user/saved-properties/${currentUserID}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch saved properties');
+            }
+
+            const savedProperties = await response.json();
+            const savedProperty = savedProperties.find(sp => Number(sp.apartmentID) === Number(apartmentID));
+
+            if (!savedProperty) {
+                showNotification('Property not found in saved list.');
+                return;
+            }
+
+            // Delete the saved property
+            const deleteResponse = await fetch(`${API_BASE}/saved-properties/${savedProperty.savedPropertyID}`, {
+                method: 'DELETE'
+            });
+
+            const result = await deleteResponse.json();
+
+            if (result.success) {
+                showNotification('Property removed from saved list!');
+                // Refresh the properties display to update button states
+                loadProperties();
+            } else {
+                showNotification(result.message || 'Failed to remove property.');
+            }
+
+        } catch (error) {
+            console.error('Error removing saved property:', error);
+            showNotification('Failed to remove property. Please try again.');
+        }
+    }
+
+    // Process purchase offer
+    async function processPurchase() {
+        const name = document.getElementById('purchase-name').value;
+        const email = document.getElementById('purchase-email').value;
+        const phone = document.getElementById('purchase-phone').value;
+        const offer = parseInt(document.getElementById('purchase-offer').value) || 0;
+        const paymentType = document.getElementById('purchase-type').value;
+        const cardNumber = document.getElementById('card-number').value;
+        const nameOnCard = document.getElementById('name-on-card').value;
+
+        // Basic validation
+        if (!name || !email || !phone || offer <= 0 || !paymentType) {
+            alert('Please fill in all required fields and enter a valid offer amount.');
+            return;
+        }
+
+        // If payment type is not Cash, validate card details
+        if (paymentType !== 'Cash' && (!cardNumber || !nameOnCard)) {
+            alert('Please provide card details for non-cash payment methods.');
+            return;
+        }
+
+        // Fixed property price is $450,000 as shown in the UI
+        const fixedPrice = 450000;
+
+        // Prepare data to send to the backend
+        const purchaseData = {
+            userID: currentUserID,
+            apartmentID: currentProperty,
+            paymentType: paymentType,
+            cardNumber: cardNumber || null,
+            nameOnCard: nameOnCard || null,
+            offerAmount: offer,
+            askingPrice: fixedPrice
+        };
+
+        try {
+            // Show loading state
+            const submitButton = document.querySelector('#purchase-form button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Processing...';
+            submitButton.disabled = true;
+
+            // Send data to backend
+            const response = await fetch(PURCHASES_API + '/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(purchaseData)
+            });
+
+            // Reset button state
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+
+            if (response.ok) {
+                const result = await response.json();
+
+                // Show success message with purchase ID
+                alert(`Offer submitted successfully!\n\nProperty: $${fixedPrice.toLocaleString()}\nYour Offer: $${offer.toLocaleString()}\nPayment Method: ${paymentType}\nPurchase ID: ${result.purchaseID}`);
+
+                // Update button to show offer submitted
+                const purchaseButton = document.getElementById(`purchase-btn-${currentProperty}`);
+                if (purchaseButton) {
+                    purchaseButton.textContent = 'Offer Submitted ✓';
+                    purchaseButton.style.backgroundColor = '#95a5a6';
+                    purchaseButton.disabled = true;
+                    purchaseButton.onclick = null;
+                }
+
+                // Log activity for debugging
+                console.log('Purchase offer saved successfully:', result);
+
+                // Close the modal
+                closeModal('purchase-modal');
+
+                // Save purchase to profile and refresh lists
+                try { await savePurchasedToProfile(currentProperty, fixedPrice); } catch(e) { console.warn('Failed to save purchased property to profile', e); }
+                try { await loadPurchasedIds(); } catch(_) {}
+                try { displayProperties((cachedProperties||[]).filter(p=>!purchasedIds.has(Number(p.apartmentID)))); } catch(_) {}
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to submit purchase offer');
+            }
+        } catch (error) {
+            console.error('Error processing purchase offer:', error);
+            alert(`Error submitting offer: ${error.message}. Please try again.`);
+        }
+    }
+
+    async function savePurchasedToProfile(apartmentId, price){
+        try {
+            if (!currentUserID) return;
+            const prop = (cachedProperties||[]).find(p=>Number(p.apartmentID)===Number(apartmentId)) || {};
+            const imageUrl = (prop && prop.imageUrl) || '';
+            const payload = {
+                userID: currentUserID,
+                propertyPrice: String(price || prop.price || ''),
+                propertyAddress: prop.location || 'Purchased Property',
+                propertyFeatures: `${(prop.bedrooms||0)} bed, ${(prop.bathrooms||1)} bath, ${(prop.type||'Property')} (PURCHASED)`,
+                propertyData: {
+                    apartmentID: apartmentId,
+                    type: prop.type || 'Property',
+                    price: prop.price || price || 0,
+                    bedrooms: prop.bedrooms || 0,
+                    bathrooms: prop.bathrooms || 1,
+                    location: prop.location || '',
+                    description: prop.description || '',
+                    imageUrl: imageUrl,
+                    purchased: true,
+                    savedDate: new Date().toISOString(),
+                    source: 'buy-page'
+                }
+            };
+            await fetch(`${API_BASE}/saved-properties`, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload) });
+        } catch(e) { console.warn('savePurchasedToProfile failed', e); }
+    }
+
+    // Utility: debounce to limit rapid filter calls during slider drag
+    function debounce(fn, delay = 300) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => fn.apply(this, args), delay);
+        };
+    }
+
+    // Keep a single debounced instance to avoid re-creating on every re-init
+    const debouncedApplyFilters = debounce(() => {
+        if (document.getElementById('price-min') && document.getElementById('price-max')) {
+            applyFilters({silent: true});
+        }
+    }, 350);
+
+    // Generate a placeholder image URL based on property type
+    function generateImageUrl(propertyType, propertyId) {
+        const imageUrls = {
+            'Studio': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400',
+            'Apartment': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400',
+            'Condo': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400',
+            'House': 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400',
+            'Townhouse': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
+            'Villa': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400',
+            'Penthouse': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400',
+            'Mansion': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400',
+            'Ranch': 'https://images.unsplash.com/photo-1598228723793-52759bba239c?w=400'
+        };
+
+        return imageUrls[propertyType] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400';
+    }
+
+    // Initialize theme on load
+    initializeTheme();
+</script>
+</body>
+</html>
+
