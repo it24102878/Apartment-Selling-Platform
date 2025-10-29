@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - PropertyHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            /* Light Mode Variables */
+            --bg-primary-light: #F9FAFB;
+            --bg-secondary-light: #FFFFFF;
+            --text-primary-light: #111827;
+            --text-secondary-light: #6B7280;
+            --primary-light: #4F46E5;
+            --secondary-light: #06B6D4;
+            --accent-light: #F59E0B;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-light: rgba(79, 70, 229, 0.1);
+            --success-light: #22C55E;
+            --error-light: #EF4444;
+
+            /* Dark Mode Variables */
+            --bg-primary-dark: #1F2937;
+            --bg-secondary-dark: #374151;
+            --text-primary-dark: #F3F4F6;
+            --text-secondary-dark: #D1D5DB;
+            --primary-dark: #818CF8;
+            --secondary-dark: #22D3EE;
+            --accent-dark: #FBBF24;
+            --shadow-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --border-dark: rgba(129, 140, 248, 0.2);
+            --success-dark: #4ADE80;
+            --error-dark: #F87171;
+
+            /* Default to Light Mode */
+            --bg-primary: var(--bg-primary-light);
+            --bg-secondary: var(--bg-secondary-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --accent: var(--accent-light);
+            --shadow: var(--shadow-light);
+            --border: var(--border-light);
+            --success: var(--success-light);
+            --error: var(--error-light);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: var(--bg-primary-dark);
+            --bg-secondary: var(--bg-secondary-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --accent: var(--accent-dark);
+            --shadow: var(--shadow-dark);
+            --border: var(--border-dark);
+            --success: var(--success-dark);
+            --error: var(--error-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--bg-secondary);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            margin-right: 12px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin: 0 20px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--primary);
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.05);
+            transform: scale(1.1);
+        }
+
+        /* Grid and Card Styles */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            transition: var(--transition);
+        }
+
+        .card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1em;
+            transition: var(--transition);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 79, 70, 229), 0.1);
+        }
+
+        .form-group input:disabled {
+            background-color: rgba(var(--text-secondary-rgb, 107, 114, 128), 0.1);
+            cursor: not-allowed;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 16px;
+            background: var(--primary);
+            color: var(--bg-secondary);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark, #4338CA);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--error);
+        }
+
+        .btn-danger:hover {
+            background: var(--error-dark, #DC2626);
+            transform: translateY(-2px);
+        }
+
+        .list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .msg {
+            display: none;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .msg.ok {
+            display: block;
+            background: rgba(var(--success-rgb, 34, 197, 94), 0.1);
+            color: var(--success);
+            border: 1px solid rgba(var(--success-rgb, 34, 197, 94), 0.2);
+        }
+
+        .msg.err {
+            display: block;
+            background: rgba(var(--error-rgb, 239, 68, 68), 0.1);
+            color: var(--error);
+            border: 1px solid rgba(var(--error-rgb, 239, 68, 68), 0.2);
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 24px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        /* Animation for Messages */
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Payment History Styles */
+        .payment-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .payment-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .payment-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .payment-type.purchase {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .payment-type.rent {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+        }
+
+        .payment-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .payment-status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent);
+        }
+
+        .payment-status.completed {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .payment-status.failed {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .payment-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 8px 0;
+        }
+
+        .payment-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .payment-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-detail-label {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .payment-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Profile Picture Styles */
+        .profile-picture-section {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 20px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .profile-picture-section:hover {
+            border-color: var(--primary);
+            background-color: rgba(var(--primary-rgb, 79, 70, 229), 0.02);
+        }
+
+        .profile-picture-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.05);
+        }
+
+        .default-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            border: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .profile-picture-upload {
+            display: none;
+        }
+
+        .profile-picture-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            margin: 0 4px;
+        }
+
+        .profile-picture-btn:hover {
+            background: var(--primary-dark, #4338CA);
+            transform: translateY(-1px);
+        }
+
+        .profile-picture-btn.danger {
+            background: var(--error);
+        }
+
+        .profile-picture-btn.danger:hover {
+            background: var(--error-dark, #DC2626);
+        }
+
+        /* User Avatar in Navigation */
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            margin-left: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .user-avatar-default {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid var(--primary);
+            margin-left: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-avatar-default:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-top">
+            <a href="index.html" class="logo"><i class="fas fa-home"></i> PropertyHub</a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="apartment.html" onclick="checkAuth('sell')">Sell</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+            </ul>
+            <div style="display: flex; align-items: center;">
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div id="header-user-avatar"></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="grid">
+        <div class="card">
+            <h2><i class="fas fa-user-cog"></i> Account Settings</h2>
+            <div id="acc-ok" class="msg ok"></div>
+            <div id="acc-err" class="msg err"></div>
+
+            <!-- Profile Picture Section -->
+            <div class="profile-picture-section">
+                <div class="profile-picture-container">
+                    <img id="profile-picture" class="profile-picture" style="display: none;" alt="Profile Picture">
+                    <div id="default-avatar" class="default-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div>
+                    <input type="file" id="profile-picture-upload" class="profile-picture-upload" accept="image/*">
+                    <button class="profile-picture-btn" onclick="document.getElementById('profile-picture-upload').click()">
+                        <i class="fas fa-camera"></i> Upload Photo
+                    </button>
+                    <button id="remove-picture-btn" class="profile-picture-btn danger" onclick="removeProfilePicture()" style="display: none;">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input id="pf-email" disabled />
+            </div>
+            <div class="form-group">
+                <label>Name</label>
+                <input id="pf-name" disabled />
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input id="pf-phone" />
+            </div>
+            <button class="btn" onclick="updatePhone()">Update Phone</button>
+
+            <hr />
+            <div class="form-group">
+                <label>Current Password</label>
+                <input id="pf-cur" type="password" />
+            </div>
+            <div class="form-group">
+                <label>New Password</label>
+                <input id="pf-new" type="password" />
+            </div>
+            <button class="btn" onclick="changePassword()">Change Password</button>
+
+            <hr />
+            <button class="btn btn-danger" onclick="deleteAccount()">
+                <i class="fas fa-user-slash"></i> Delete Account
+            </button>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-bookmark"></i> Saved Properties</h2>
+            <div id="saved-list" class="list"></div>
+
+            <h2><i class="fas fa-building"></i> My Apartments</h2>
+            <div id="my-apartments" class="list"></div>
+
+            <h2><i class="fas fa-star"></i> My Reviews</h2>
+            <div id="my-reviews" class="list"></div>
+
+            <h2><i class="fas fa-calendar-check"></i> Booking History
+                <button class="btn btn-danger" onclick="clearBookingHistory()" style="margin-left: 12px; padding: 8px 16px; font-size: 14px;">
+                    <i class="fas fa-trash"></i> Clear History
+                </button>
+            </h2>
+            <div id="booking-history" class="list"></div>
+
+            <h2><i class="fas fa-credit-card"></i> Payment History
+                <button class="btn btn-danger" onclick="clearPaymentHistory()" style="margin-left: 12px; padding: 8px 16px; font-size: 14px;">
+                    <i class="fas fa-trash"></i> Clear History
+                </button>
+            </h2>
+            <div id="payment-history" class="list"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = 'http://localhost:8080/api';
+
+    // Theme Management
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        const toggleButton = document.getElementById('theme-toggle');
+        if (toggleButton) {
+            toggleButton.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+        document.body.classList.add('theme-transition');
+        setTimeout(() => document.body.classList.remove('theme-transition'), 300);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+    }
+
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        setTheme(theme);
+    }
+
+    // User and Authentication
+    function user() {
+        try {
+            return JSON.parse(sessionStorage.getItem('currentUser'));
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function show(id, msg, ok) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.className = 'msg ' + (ok ? 'ok' : 'err');
+        el.classList.add('animate-fadeIn');
+    }
+
+    function checkAuth() {
+        if (!user()) {
+            alert('Please login');
+            window.location = 'index.html#auth-page';
+        }
+    }
+
+    // API Functions
+    async function updatePhone() {
+        const u = user();
+        if (!u) return;
+        const phone = document.getElementById('pf-phone').value.trim();
+        if (!phone) {
+            show('acc-err', 'Phone is required', false);
+            return;
+        }
+        const res = await fetch(`${API}/user/${u.userID}/phone`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone })
+        });
+        const j = await res.json();
+        if (j.success) {
+            show('acc-ok', 'Phone updated', true);
+            // Reload profile to show updated data
+            loadUserProfile();
+        } else {
+            show('acc-err', j.message || 'Failed', false);
+        }
+    }
+
+    async function changePassword() {
+        const u = user();
+        if (!u) return;
+        const current = document.getElementById('pf-cur').value;
+        const next = document.getElementById('pf-new').value;
+        const res = await fetch(`${API}/user/${u.userID}/password`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword: current, newPassword: next })
+        });
+        const j = await res.json();
+        if (j.success) {
+            show('acc-ok', 'Password updated', true);
+        } else {
+            show('acc-err', j.message || 'Failed', false);
+        }
+    }
+
+    async function deleteAccount() {
+        const u = user();
+        if (!u) return;
+        if (!confirm('Delete account? This cannot be undone.')) return;
+        const res = await fetch(`${API}/user/${u.userID}`, { method: 'DELETE' });
+        const j = await res.json();
+        if (j.success) {
+            alert('Account deleted');
+            sessionStorage.clear();
+            window.location = 'index.html';
+        } else {
+            show('acc-err', j.message || 'Failed', false);
+        }
+    }
+
+    async function loadSaved() {
+        const u = user();
+        const list = document.getElementById('saved-list');
+        if (!u) {
+            list.innerHTML = '<div class="msg">Login to view</div>';
+            return;
+        }
+        const res = await fetch(`${API}/saved-properties/user/${u.userID}`);
+        const arr = await res.json();
+        if (!arr || arr.length === 0) {
+            list.innerHTML = '<div class="msg">No saved properties</div>';
+            return;
+        }
+        list.innerHTML = arr.map(p => `
+                <div class='card'>
+                    <div><strong>${p.propertyAddress}</strong></div>
+                    <div>${p.propertyPrice}</div>
+                    <div style='margin-top:8px'>
+                        <button class='btn btn-danger' onclick='removeSaved(${p.savedPropertyID})'>Remove</button>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    async function removeSaved(id) {
+        await fetch(`${API}/saved-properties/${id}`, { method: 'DELETE' });
+        loadSaved();
+    }
+
+    async function loadMyApartments() {
+        const u = user();
+        const list = document.getElementById('my-apartments');
+        if (!u) {
+            list.innerHTML = '<div class="msg">Login to view</div>';
+            return;
+        }
+        const res = await fetch(`${API}/apartments/user/${u.userID}`);
+        const arr = await res.json();
+        if (!arr || arr.length === 0) {
+            list.innerHTML = '<div class="msg">No apartments yet</div>';
+            return;
+        }
+        list.innerHTML = arr.map(a => `
+                <div class='card'>
+                    <div><strong>${a.type}</strong> - $${a.price}</div>
+                    <div>${a.location}</div>
+                    <div>${a.description || ''}</div>
+                    <div style='margin-top:8px'>
+                        <button class='btn' onclick='editApt(${a.apartmentID})'>Edit</button>
+                        <button class='btn btn-danger' onclick='delApt(${a.apartmentID})'>Delete</button>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    async function delApt(id) {
+        const u = user();
+        if (!confirm('Delete apartment?')) return;
+        const r = await fetch(`${API}/apartments/${id}?userId=${u.userID}`, { method: 'DELETE' });
+        const j = await r.json();
+        if (j.success) loadMyApartments();
+        else alert(j.message || 'Failed');
+    }
+
+    async function editApt(id) {
+        const u = user();
+        const price = prompt('New price:');
+        const body = {};
+        if (price) body.price = price;
+        const r = await fetch(`${API}/apartments/${id}?userId=${u.userID}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const j = await r.json();
+        if (j.success) loadMyApartments();
+        else alert(j.message || 'Failed');
+    }
+
+    async function loadMyReviews() {
+        const u = user();
+        const list = document.getElementById('my-reviews');
+        if (!u) {
+            list.innerHTML = '<div class="msg">Login to view</div>';
+            return;
+        }
+        const res = await fetch(`${API}/reviews/user/${u.userID}`);
+        const arr = await res.json();
+        if (!arr || arr.length === 0) {
+            list.innerHTML = '<div class="msg">No reviews</div>';
+            return;
+        }
+        list.innerHTML = arr.map(r => `
+                <div class='card'>
+                    <div style='color: var(--accent);'>${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                    <div><strong>${r.title}</strong></div>
+                    <div>${r.comment || ''}</div>
+                    <div style='margin-top:8px'>
+                        <button class='btn btn-danger' onclick='delRev(${r.reviewID})'>Delete</button>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    async function delRev(id) {
+        const u = user();
+        const r = await fetch(`${API}/reviews/${id}?userId=${u.userID}`, { method: 'DELETE' });
+        const j = await r.json();
+        if (j.success) loadMyReviews();
+        else alert(j.error || 'Failed');
+    }
+
+    async function loadBookingHistory() {
+        const u = user();
+        const list = document.getElementById('booking-history');
+        if (!u) {
+            list.innerHTML = '<div class="msg">Login to view booking history</div>';
+            return;
+        }
+        
+        try {
+            const res = await fetch(`${API}/payment-history/user/${u.userID}`);
+            if (!res.ok) {
+                console.error('HTTP Error:', res.status, res.statusText);
+                list.innerHTML = '<div class="msg err">Failed to load booking history (HTTP ' + res.status + ')</div>';
+                return;
+            }
+            const data = await res.json();
+            if (!data.success) {
+                console.error('API Error:', data.message);
+                list.innerHTML = '<div class="msg err">Failed to load booking history: ' + (data.message || 'Unknown error') + '</div>';
+                return;
+            }
+            const payments = (data.payments || []).filter(p => p.type === 'Rent');
+            if (payments.length === 0) {
+                list.innerHTML = '<div class="msg">No bookings found</div>';
+                return;
+            }
+
+            list.innerHTML = payments.map(payment => {
+                // Handle LocalDateTime format from backend
+                let date = 'N/A';
+                try {
+                    if (payment.createdAt) {
+                        if (Array.isArray(payment.createdAt)) {
+                            const [year, month, day, hour = 0, minute = 0, second = 0] = payment.createdAt;
+                            const dateObj = new Date(year, month - 1, day, hour, minute, second);
+                            date = dateObj.toLocaleDateString('en-US', {
+                                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                            });
+                        } else {
+                            const dateObj = new Date(payment.createdAt);
+                            date = dateObj.toLocaleDateString('en-US', {
+                                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing date:', e);
+                    date = 'Invalid Date';
+                }
+
+                const statusClass = payment.status ? payment.status.toLowerCase() : 'unknown';
+                return `
+                    <div class='payment-card'>
+                        <div class='payment-status ${statusClass}'>${payment.status}</div>
+                        <div class='payment-type rent'>Booking</div>
+                        <div class='payment-amount'>$${payment.amount.toLocaleString()}</div>
+                        <div><strong>${payment.apartmentType || 'Apartment'}</strong></div>
+                        <div>${payment.apartmentLocation || 'Location not available'}</div>
+                        <div class='payment-details'>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Booked On</span>
+                                <span>${date}</span>
+                            </div>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Payment Method</span>
+                                <span>${payment.paymentType}</span>
+                            </div>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Card Number</span>
+                                <span>${payment.cardNumber || '****'}</span>
+                            </div>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Monthly Rent</span>
+                                <span>$${(payment.monthlyRent || 0).toLocaleString()}</span>
+                            </div>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Duration</span>
+                                <span>${payment.months || 0} months</span>
+                            </div>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Apartment ID</span>
+                                <span>${payment.apartmentID}</span>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        } catch (error) {
+            console.error('Error loading booking history:', error);
+            list.innerHTML = '<div class="msg err">Failed to load booking history</div>';
+        }
+    }
+
+    async function loadPaymentHistory() {
+        const u = user();
+        const list = document.getElementById('payment-history');
+        if (!u) {
+            list.innerHTML = '<div class="msg">Login to view payment history</div>';
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API}/payment-history/user/${u.userID}`);
+
+            if (!res.ok) {
+                console.error('HTTP Error:', res.status, res.statusText);
+                list.innerHTML = '<div class="msg err">Failed to load payment history (HTTP ' + res.status + ')</div>';
+                return;
+            }
+
+            const data = await res.json();
+            console.log('Payment history response:', data);
+
+            if (!data.success) {
+                console.error('API Error:', data.message);
+                list.innerHTML = '<div class="msg err">Failed to load payment history: ' + (data.message || 'Unknown error') + '</div>';
+                return;
+            }
+
+            const payments = data.payments || [];
+            if (payments.length === 0) {
+                list.innerHTML = '<div class="msg">No payment history found</div>';
+                return;
+            }
+
+            list.innerHTML = payments.map(payment => {
+                // Handle LocalDateTime format from backend
+                let date = 'N/A';
+                try {
+                    if (payment.createdAt) {
+                        // Handle both LocalDateTime array format [year, month, day, hour, minute, second]
+                        // and ISO string format
+                        if (Array.isArray(payment.createdAt)) {
+                            const [year, month, day, hour = 0, minute = 0, second = 0] = payment.createdAt;
+                            const dateObj = new Date(year, month - 1, day, hour, minute, second);
+                            date = dateObj.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                        } else {
+                            const dateObj = new Date(payment.createdAt);
+                            date = dateObj.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing date:', e);
+                    date = 'Invalid Date';
+                }
+
+                const isRent = payment.type === 'Rent';
+                const statusClass = payment.status ? payment.status.toLowerCase() : 'unknown';
+
+                return `
+                    <div class='payment-card'>
+                        <div class='payment-status ${statusClass}'>${payment.status}</div>
+                        <div class='payment-type ${payment.type.toLowerCase()}'>${payment.type}</div>
+
+                        <div class='payment-amount'>$${payment.amount.toLocaleString()}</div>
+
+                        <div><strong>${payment.apartmentType || 'Apartment'}</strong></div>
+                        <div>${payment.apartmentLocation || 'Location not available'}</div>
+
+                        <div class='payment-details'>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Payment Method</span>
+                                <span>${payment.paymentType}</span>
+                            </div>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Card Number</span>
+                                <span>${payment.cardNumber || '****'}</span>
+                            </div>
+                            ${isRent ? `
+                                <div class='payment-detail'>
+                                    <span class='payment-detail-label'>Monthly Rent</span>
+                                    <span>$${payment.monthlyRent.toLocaleString()}</span>
+                                </div>
+                                <div class='payment-detail'>
+                                    <span class='payment-detail-label'>Duration</span>
+                                    <span>${payment.months} months</span>
+                                </div>
+                            ` : ''}
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Name on Card</span>
+                                <span>${payment.nameOnCard || 'N/A'}</span>
+                            </div>
+                            <div class='payment-detail'>
+                                <span class='payment-detail-label'>Apartment ID</span>
+                                <span>${payment.apartmentID}</span>
+                            </div>
+                        </div>
+
+                        <div class='payment-date'>${date}</div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (error) {
+            console.error('Error loading payment history:', error);
+            list.innerHTML = '<div class="msg err">Error loading payment history</div>';
+        }
+    }
+
+    // Clear History Functions
+    function clearBookingHistory() {
+        if (!confirm('Are you sure you want to clear your booking history? This will only clear the display, not delete the actual records.')) {
+            return;
+        }
+
+        const list = document.getElementById('booking-history');
+        list.innerHTML = '<div class="msg">Booking history cleared</div>';
+
+        // Show success message
+        show('acc-ok', 'Booking history cleared successfully!', true);
+    }
+
+    function clearPaymentHistory() {
+        if (!confirm('Are you sure you want to clear your payment history? This will only clear the display, not delete the actual records.')) {
+            return;
+        }
+
+        const list = document.getElementById('payment-history');
+        list.innerHTML = '<div class="msg">Payment history cleared</div>';
+
+        // Show success message
+        show('acc-ok', 'Payment history cleared successfully!', true);
+    }
+
+    // Profile Picture Functions
+    function initProfilePicture() {
+        const u = user();
+        if (!u) return;
+
+        const profilePic = document.getElementById('profile-picture');
+        const defaultAvatar = document.getElementById('default-avatar');
+        const removeBtnContainer = document.getElementById('remove-picture-btn');
+        const uploadInput = document.getElementById('profile-picture-upload');
+
+        // Load existing profile picture from localStorage
+        const savedPicture = localStorage.getItem(`profilePicture_${u.userID}`);
+        if (savedPicture) {
+            profilePic.src = savedPicture;
+            profilePic.style.display = 'block';
+            defaultAvatar.style.display = 'none';
+            removeBtnContainer.style.display = 'inline-block';
+        } else {
+            // Show user's initials in default avatar
+            const userName = u.name || u.email || 'User';
+            const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            defaultAvatar.innerHTML = initials;
+        }
+
+        // Handle file upload
+        uploadInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    show('acc-err', 'Please select a valid image file', false);
+                    return;
+                }
+
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    show('acc-err', 'Image size must be less than 5MB', false);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageData = e.target.result;
+
+                    // Save to localStorage
+                    localStorage.setItem(`profilePicture_${u.userID}`, imageData);
+
+                    // Update display
+                    profilePic.src = imageData;
+                    profilePic.style.display = 'block';
+                    defaultAvatar.style.display = 'none';
+                    removeBtnContainer.style.display = 'inline-block';
+
+                    // Update all profile avatars on the page
+                    updateAllProfileAvatars();
+
+                    show('acc-ok', 'Profile picture updated successfully!', true);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function removeProfilePicture() {
+        const u = user();
+        if (!u) return;
+
+        if (!confirm('Are you sure you want to remove your profile picture?')) return;
+
+        // Remove from localStorage
+        localStorage.removeItem(`profilePicture_${u.userID}`);
+
+        // Update display
+        const profilePic = document.getElementById('profile-picture');
+        const defaultAvatar = document.getElementById('default-avatar');
+        const removeBtnContainer = document.getElementById('remove-picture-btn');
+
+        profilePic.style.display = 'none';
+        defaultAvatar.style.display = 'flex';
+        removeBtnContainer.style.display = 'none';
+
+        // Show user's initials
+        const userName = u.name || u.email || 'User';
+        const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        defaultAvatar.innerHTML = initials;
+
+        // Update all profile avatars on the page
+        updateAllProfileAvatars();
+
+        show('acc-ok', 'Profile picture removed successfully!', true);
+    }
+
+    function getUserProfilePicture(userID) {
+        return localStorage.getItem(`profilePicture_${userID}`);
+    }
+
+    function getUserInitials(userName) {
+        if (!userName) return 'U';
+        return userName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    }
+
+    function createUserAvatar(userName, userID, size = '32px') {
+        const savedPicture = getUserProfilePicture(userID);
+
+        if (savedPicture) {
+            return `<img src="${savedPicture}" class="user-avatar" style="width: ${size}; height: ${size};" alt="Profile Picture">`;
+        } else {
+            const initials = getUserInitials(userName);
+            return `<div class="user-avatar-default" style="width: ${size}; height: ${size}; font-size: ${parseInt(size) * 0.4}px;">${initials}</div>`;
+        }
+    }
+
+    function updateAllProfileAvatars() {
+        const u = user();
+        if (!u) return;
+
+        // Update any existing profile avatars on the current page
+        const avatars = document.querySelectorAll('.user-avatar, .user-avatar-default');
+        avatars.forEach(avatar => {
+            const parent = avatar.parentElement;
+            if (parent) {
+                avatar.remove();
+                parent.insertAdjacentHTML('beforeend', createUserAvatar(u.name || u.email, u.userID));
+            }
+        });
+
+        // Also update header avatar
+        updateHeaderAvatar();
+    }
+
+    function updateHeaderAvatar() {
+        const u = user();
+        if (!u) return;
+
+        const headerAvatarContainer = document.getElementById('header-user-avatar');
+        if (headerAvatarContainer) {
+            headerAvatarContainer.innerHTML = createUserAvatar(u.name || u.email, u.userID);
+        }
+    }
+
+    // Load user profile data from database
+    async function loadUserProfile() {
+        const u = user();
+        if (!u) return;
+
+        try {
+            const res = await fetch(`${API}/user/${u.userID}/profile`);
+            const data = await res.json();
+
+            if (data.success && data.user) {
+                const userData = data.user;
+                document.getElementById('pf-email').value = userData.email || '';
+                document.getElementById('pf-name').value = userData.name || '';
+                document.getElementById('pf-phone').value = userData.phone || '';
+
+                // Update session storage with latest data
+                const currentUser = {
+                    ...u,
+                    email: userData.email,
+                    name: userData.name,
+                    phone: userData.phone
+                };
+                sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+            } else {
+                show('acc-err', 'Failed to load profile data', false);
+            }
+        } catch (error) {
+            console.error('Error loading profile:', error);
+            show('acc-err', 'Failed to load profile data', false);
+        }
+    }
+
+    function init() {
+        initializeTheme();
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        checkAuth();
+        const u = user();
+        if (!u) return;
+
+        // Load fresh user data from database instead of using session storage
+        loadUserProfile();
+        loadSaved();
+        loadMyApartments();
+        loadMyReviews();
+        loadBookingHistory();
+        loadPaymentHistory();
+        initProfilePicture();
+        updateHeaderAvatar();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
